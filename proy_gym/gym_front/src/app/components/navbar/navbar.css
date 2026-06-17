@@ -1,0 +1,51 @@
+/* Navbar link hover underline effect */
+.nav-link-tw {
+  position: relative;
+  color: var(--pg-primary);
+  font-weight: 600;
+  padding: 0.7rem 1.4rem;
+  font-size: 1.1rem;
+  transition: color 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-link-tw::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2.5px;
+  background-color: var(--pg-secondary);
+  border-radius: 2px;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+.nav-link-tw:hover::after,
+.nav-link-tw.active::after {
+  width: 70%;
+  left: 15%;
+}
+
+.nav-link-tw:hover,
+.nav-link-tw.active {
+  color: var(--pg-secondary);
+}
+
+/* Mobile nav link */
+.nav-link-tw-mobile {
+  display: block;
+  color: var(--pg-primary);
+  font-weight: 600;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  transition: color 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-link-tw-mobile:hover,
+.nav-link-tw-mobile.active {
+  color: var(--pg-secondary);
+}

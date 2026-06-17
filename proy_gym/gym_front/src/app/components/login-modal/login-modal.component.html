@@ -1,0 +1,94 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm flex items-center justify-center p-4" (click)="close()"></div>
+
+<!-- Modal -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+  <div class="bg-surface-container-lowest rounded-xl shadow-2xl w-full max-w-[440px] overflow-hidden flex flex-col relative transition-transform duration-300 pointer-events-auto"
+       role="dialog" aria-modal="true" aria-labelledby="login-modal-title"
+       (click)="$event.stopPropagation()" (keydown)="onKeydown($event)">
+
+    <!-- Close Button -->
+    <button class="absolute top-4 right-4 text-outline hover:text-on-surface transition-colors focus:outline-none focus:ring-2 focus:ring-secondary rounded-full p-1 z-10"
+            (click)="close()" aria-label="Cerrar">
+      <i class="bi bi-x-lg text-xl"></i>
+    </button>
+
+    <!-- Header -->
+    <div class="px-8 pt-10 pb-6 text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-container text-on-primary mb-4 shadow-md">
+        <i class="bi bi-person-circle text-3xl"></i>
+      </div>
+      <h2 id="login-modal-title" class="text-headline-md font-headline-md text-primary-container mb-2">Iniciar Sesion</h2>
+      <p class="text-sm text-outline">Accede a tu cuenta para continuar</p>
+    </div>
+
+    <!-- Body -->
+    <div class="px-8 pb-6">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-6">
+        <!-- DNI -->
+        <div>
+          <label for="dniInput" class="block text-label-bold text-on-surface-variant mb-2">
+            <i class="bi bi-person me-1 text-secondary"></i> DNI
+          </label>
+          <div class="relative">
+            <i class="bi bi-person absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+            <input id="dniInput" #dniInput type="text" formControlName="dni"
+                   class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors text-on-surface"
+                   inputmode="numeric" maxlength="8" placeholder="Ej: 12345678" autocomplete="username" aria-required="true">
+          </div>
+          <div class="text-error text-sm mt-1" *ngIf="form.controls.dni.touched && form.controls.dni.errors?.['required']">
+            Ingresa tu DNI.
+          </div>
+          <div class="text-error text-sm mt-1" *ngIf="form.controls.dni.touched && form.controls.dni.errors?.['pattern']">
+            El DNI debe contener solo 8 dígitos numéricos.
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="passInput" class="block text-label-bold text-on-surface-variant mb-2">
+            <i class="bi bi-lock me-1 text-secondary"></i> Contrasena
+          </label>
+          <div class="relative">
+            <i class="bi bi-lock absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+            <input id="passInput" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                   class="w-full pl-10 pr-10 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors text-on-surface"
+                   placeholder="Tu contrasena" autocomplete="current-password" aria-required="true">
+            <button type="button" (click)="showPassword = !showPassword"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary rounded-full p-1">
+              <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+            </button>
+          </div>
+          <div class="text-error text-sm mt-1" role="alert"
+               *ngIf="form.controls.password.touched && form.controls.password.invalid">
+            Ingresa tu contraseña.
+          </div>
+        </div>
+
+        <!-- General Error -->
+        <div *ngIf="errorMsg"
+             class="bg-error/10 border border-error text-error rounded-lg p-3 flex items-center gap-2 text-sm" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i> {{ errorMsg }}
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" [disabled]="loading"
+                class="w-full py-4 px-6 rounded-lg bg-gradient-to-r from-primary-container to-on-tertiary-fixed-variant text-white font-bold uppercase tracking-wider shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+          <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          <i *ngIf="!loading" class="bi bi-box-arrow-in-right"></i>
+          {{ loading ? 'Ingresando...' : 'Iniciar Sesion' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-surface-container px-8 py-5 text-center border-t border-surface-variant">
+      <p class="text-sm text-on-surface-variant mb-1">No tienes una cuenta?</p>
+      <a routerLink="/registrar" (click)="close()"
+         class="inline-flex items-center gap-2 text-sm text-secondary font-semibold hover:text-primary transition-colors cursor-pointer">
+        <i class="bi bi-person-plus"></i> Registrate aqui
+      </a>
+    </div>
+
+  </div>
+</div>

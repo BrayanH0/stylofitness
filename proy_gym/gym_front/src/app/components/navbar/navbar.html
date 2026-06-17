@@ -1,0 +1,116 @@
+<!-- Skip link -->
+<a class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-primary text-white px-4 py-2 rounded-lg z-50"
+   routerLink="/" fragment="main-content">Saltar al contenido principal</a>
+
+<nav class="bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08)] sticky top-0 z-50">
+  <div class="max-w-[1320px] mx-auto px-6 py-2 flex justify-between items-center">
+
+    <!-- Logo -->
+    <a routerLink="/" class="flex items-center gap-2">
+      <img src="/gym.jpg" alt="Stylossfitness Logo" class="h-[52px] w-auto">
+    </a>
+
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex items-center gap-2">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+         class="nav-link-tw">Inicio</a>
+
+      <a routerLink="/ubicacion" routerLinkActive="active"
+         class="nav-link-tw">Ubicacion</a>
+
+      <!-- CLIENTE logueado: solo Mi Portal -->
+      <a *ngIf="isLoggedIn() && !isPersonalOrAdmin()"
+         routerLink="/interfaz-usuario" routerLinkActive="active"
+         class="nav-link-tw">Mi Portal</a>
+
+      <!-- PERSONAL logueado: solo Mis Clases -->
+      <a *ngIf="isLoggedIn() && isPersonal()"
+         routerLink="/personal" routerLinkActive="active"
+         class="nav-link-tw">Mis Clases</a>
+
+      <!-- ADMIN logueado: solo Panel Admin -->
+      <a *ngIf="isLoggedIn() && isAdmin()"
+         routerLink="/admin" routerLinkActive="active"
+         class="nav-link-tw">Panel Admin</a>
+
+      <!-- When not logged in: login link -->
+      <a *ngIf="!isLoggedIn()"
+         (click)="openLogin()"
+         class="nav-link-tw cursor-pointer">Iniciar Sesion</a>
+
+      <!-- When logged in: username + role badge + logout -->
+      <div *ngIf="isLoggedIn()" class="flex items-center gap-3 ml-2">
+        <span class="text-primary font-medium flex items-center gap-1">
+          <i class="bi bi-person-circle"></i>
+          {{ getUserName() }}
+          <span *ngIf="isAdmin()"
+                class="inline-block bg-warning text-white text-xs px-2 py-0.5 rounded font-bold">Admin</span>
+          <span *ngIf="isPersonal()"
+                class="inline-block bg-secondary text-white text-xs px-2 py-0.5 rounded font-bold">Personal</span>
+        </span>
+        <button (click)="logout()"
+                class="px-4 py-2 rounded-lg border border-primary/30 text-primary font-semibold text-sm hover:bg-primary/10 transition-all"
+                aria-label="Cerrar sesion">
+          <i class="bi bi-box-arrow-right"></i> Salir
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Toggle -->
+    <button class="md:hidden text-primary text-2xl p-2" (click)="toggleMenu()"
+            aria-label="Abrir navegacion">
+      <i class="bi bi-list"></i>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="md:hidden bg-white border-t border-surface-variant" *ngIf="menuOpen">
+    <div class="px-6 py-4 flex flex-col gap-2">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+         class="nav-link-tw-mobile">Inicio</a>
+
+      <a routerLink="/ubicacion" routerLinkActive="active"
+         class="nav-link-tw-mobile">Ubicacion</a>
+
+      <a *ngIf="isLoggedIn() && !isPersonalOrAdmin()"
+         routerLink="/interfaz-usuario" routerLinkActive="active"
+         class="nav-link-tw-mobile">Mi Portal</a>
+
+      <a *ngIf="isLoggedIn() && isPersonal()"
+         routerLink="/personal" routerLinkActive="active"
+         class="nav-link-tw-mobile">Mis Clases</a>
+
+      <a *ngIf="isLoggedIn() && isAdmin()"
+         routerLink="/admin" routerLinkActive="active"
+         class="nav-link-tw-mobile">Panel Admin</a>
+
+      <a *ngIf="!isLoggedIn()"
+         (click)="openLogin(); menuOpen = false"
+         class="nav-link-tw-mobile cursor-pointer">Iniciar Sesion</a>
+
+      <div *ngIf="isLoggedIn()" class="flex flex-col gap-2 pt-2 border-t border-surface-variant">
+        <span class="text-primary font-medium flex items-center gap-2">
+          <i class="bi bi-person-circle"></i>
+          {{ getUserName() }}
+          <span *ngIf="isAdmin()"
+                class="inline-block bg-warning text-white text-xs px-2 py-0.5 rounded font-bold">Admin</span>
+          <span *ngIf="isPersonal()"
+                class="inline-block bg-secondary text-white text-xs px-2 py-0.5 rounded font-bold">Personal</span>
+        </span>
+        <button (click)="logout(); menuOpen = false"
+                class="text-left px-4 py-2 rounded-lg border border-primary/30 text-primary font-semibold text-sm hover:bg-primary/10 transition-all"
+                aria-label="Cerrar sesion">
+          <i class="bi bi-box-arrow-right"></i> Salir
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Modal dinamico -->
+<ng-container *ngIf="loginOpen">
+  <app-login-modal
+    role="usuario"
+    (closed)="closeLoginModal()">
+  </app-login-modal>
+</ng-container>

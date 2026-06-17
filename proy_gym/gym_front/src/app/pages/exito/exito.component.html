@@ -1,0 +1,90 @@
+<app-navbar></app-navbar>
+
+<div class="min-h-screen bg-surface-container-low flex items-center justify-center py-20 px-6" id="main-content">
+  <div class="max-w-[800px] w-full mx-auto">
+
+    <div class="bg-surface-container-lowest rounded-xl shadow overflow-hidden border border-outline-variant text-center p-10">
+
+      <!-- Step Indicator (siempre visible) -->
+      <div class="mb-10" role="group" aria-label="Pasos del proceso">
+
+        <!-- Linea + circulos -->
+        <div class="relative flex justify-between items-center px-10 h-8">
+          <div class="absolute top-1/2 left-10 right-10 h-1 bg-secondary -translate-y-1/2 rounded-full z-0"></div>
+
+          <!-- Plan -->
+          <div class="relative z-10 w-8 h-8 rounded-full bg-secondary text-on-primary flex items-center justify-center shadow-md">
+            <i class="bi bi-check text-label-bold"></i>
+          </div>
+          <!-- Datos -->
+          <div class="relative z-10 w-8 h-8 rounded-full bg-secondary text-on-primary flex items-center justify-center shadow-md">
+            <i class="bi bi-check text-label-bold"></i>
+          </div>
+          <!-- Pago -->
+          <div class="relative z-10 w-8 h-8 rounded-full bg-secondary text-on-primary flex items-center justify-center shadow-md ring-4 ring-secondary-fixed">
+            <i class="bi bi-check text-label-bold"></i>
+          </div>
+        </div>
+
+        <!-- Etiquetas -->
+        <div class="flex justify-between px-10 mt-2">
+          <span class="w-8 text-center text-label-bold text-[0.7rem] text-secondary uppercase tracking-widest">Plan</span>
+          <span class="w-8 text-center text-label-bold text-[0.7rem] text-secondary uppercase tracking-widest">Datos</span>
+          <span class="w-8 text-center text-label-bold text-[0.7rem] text-secondary uppercase tracking-widest">Pago</span>
+        </div>
+      </div>
+
+      <!-- CARGANDO / CONFIRMANDO -->
+      <div *ngIf="estado === 'cargando' || estado === 'login_auto'" class="flex flex-col items-center py-6">
+        <div class="inline-block w-10 h-10 border-4 border-secondary border-t-transparent rounded-full animate-spin mb-4"></div>
+        <h2 class="text-headline-md font-headline-md text-primary-container mb-2">
+          {{ estado === 'cargando' ? 'Confirmando tu pago...' : 'Iniciando sesion...' }}
+        </h2>
+        <p class="text-body-md text-on-surface-variant">Por favor espera un momento.</p>
+      </div>
+
+      <!-- CONFIRMADO (esperando login auto) -->
+      <div *ngIf="estado === 'confirmado'" class="flex flex-col items-center py-6">
+        <div class="inline-block w-10 h-10 border-4 border-secondary border-t-transparent rounded-full animate-spin mb-4"></div>
+        <h2 class="text-headline-md font-headline-md text-primary-container mb-2">Pago confirmado</h2>
+        <p class="text-body-md text-on-surface-variant">Estamos preparando tu cuenta...</p>
+      </div>
+
+      <!-- LISTO (exito, mostrar botones) -->
+      <div *ngIf="estado === 'listo'" class="flex flex-col items-center">
+        <i class="bi bi-check-circle-fill text-[6rem] text-success mb-6 leading-none"></i>
+        <h2 class="text-section-title font-section-title text-primary-container mb-4">Bienvenido!</h2>
+        <p class="text-body-md text-on-surface-variant mb-10 px-4">
+          Tu registro y pago fueron exitosos. Ya puedes empezar a entrenar.
+        </p>
+
+        <div *ngIf="loginErrorMessage" class="bg-error-container text-on-error-container rounded-lg px-6 py-4 mb-6 max-w-md">
+          <i class="bi bi-exclamation-circle-fill me-2"></i> {{ loginErrorMessage }}
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button (click)="irAPortal()"
+                  class="bg-gradient-to-r from-primary-container to-on-tertiary-fixed-variant text-on-primary rounded-lg font-label-bold text-label-bold py-4 px-10 hover:-translate-y-1 shadow-md hover:shadow-lg transition-all duration-300 inline-flex items-center gap-2 uppercase tracking-wide">
+            Ir al Panel <i class="bi bi-arrow-right"></i>
+          </button>
+          <button *ngIf="loginErrorMessage" (click)="irALogin()"
+                  class="bg-surface-container-highest text-on-surface border border-outline-variant rounded-lg font-label-bold text-label-bold py-4 px-10 hover:-translate-y-1 shadow-md hover:shadow-lg transition-all duration-300 inline-flex items-center gap-2 uppercase tracking-wide">
+            Iniciar Sesion Manual <i class="bi bi-box-arrow-in-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ERROR -->
+      <div *ngIf="estado === 'error'" class="flex flex-col items-center">
+        <i class="bi bi-exclamation-triangle-fill text-[6rem] text-error mb-6 leading-none"></i>
+        <h2 class="text-section-title font-section-title text-error mb-4">Algo salio mal</h2>
+        <p class="text-body-md text-on-surface-variant mb-10 px-4">{{ errorMessage }}</p>
+        <button (click)="irALogin()"
+                class="bg-gradient-to-r from-primary-container to-on-tertiary-fixed-variant text-on-primary rounded-lg font-label-bold text-label-bold py-4 px-10 hover:-translate-y-1 shadow-md hover:shadow-lg transition-all duration-300 inline-flex items-center gap-2 uppercase tracking-wide">
+          Volver al Inicio <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

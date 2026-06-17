@@ -1,0 +1,59 @@
+# ============================================================
+# Spring Boot / Maven (backend)
+# ============================================================
+gym_back/gym/target/
+gym_back/gym/*.class
+gym_back/gym/*.jar
+gym_back/gym/*.war
+
+# Secrets — use application.properties.example as template
+gym_back/gym/src/main/resources/application.properties
+
+# Maven wrapper cache (keep mvnw / mvnw.cmd, ignore downloaded binary)
+.mvn/repository/
+
+# ============================================================
+# Angular / Node (frontend)
+# ============================================================
+proy_gym/gym_front/node_modules/
+proy_gym/gym_front/dist/
+proy_gym/gym_front/.angular/
+
+# ============================================================
+# IDEs
+# ============================================================
+.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.classpath
+.project
+.settings/
+.factorypath
+
+# ============================================================
+# OS
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# Logs / temporales
+# ============================================================
+*.log
+*.tmp
+*.bak
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================================
+# Env / secretos
+# ============================================================
+.env
+.env.local
+.env.production

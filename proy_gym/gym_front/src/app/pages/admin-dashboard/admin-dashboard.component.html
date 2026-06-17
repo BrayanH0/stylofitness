@@ -1,0 +1,630 @@
+<app-navbar></app-navbar>
+
+<!-- Main Content -->
+<main>
+
+<!-- HEADER -->
+<header class="bg-gradient-to-r from-primary-container to-secondary text-on-primary shadow">
+  <div class="max-w-[1320px] mx-auto px-6 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h1 class="text-h1 font-bold text-white mb-1 flex items-center gap-2">
+          <i class="bi bi-shield-lock"></i> Panel de Administracion
+        </h1>
+        <p class="text-sm text-white/80">Conectado como <strong>{{ usuario?.nombre || '' }} {{ usuario?.apellido || '' }}</strong></p>
+      </div>
+      <span class="inline-flex items-center gap-2 bg-white/10 text-white border border-white/20 px-3 py-1 rounded-full text-sm font-semibold">
+        <i class="bi bi-person-gear"></i> Admin
+      </span>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-[1320px] mx-auto px-6 py-6">
+
+  <!-- Mensajes -->
+  <div *ngIf="mensajeExito" class="bg-success/10 border border-success text-success rounded-lg p-4 mb-6 flex items-center gap-2 justify-between" role="alert">
+    <div class="flex items-center gap-2">
+      <i class="bi bi-check-circle"></i> {{ mensajeExito }}
+    </div>
+    <button type="button" class="text-success hover:text-on-surface transition-colors" (click)="mensajeExito = null">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <div *ngIf="mensajeError" class="bg-error/10 border border-error text-error rounded-lg p-4 mb-6 flex items-center gap-2 justify-between" role="alert">
+    <div class="flex items-center gap-2">
+      <i class="bi bi-exclamation-triangle"></i> {{ mensajeError }}
+    </div>
+    <button type="button" class="text-error hover:text-on-surface transition-colors" (click)="mensajeError = null">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+      <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+        <i class="bi bi-people text-xl"></i>
+      </div>
+      <div>
+        <span class="text-label-bold text-outline uppercase tracking-wider">Total Clientes</span>
+        <p class="text-h2 font-h2 text-on-surface">{{ totalUsuarios }}</p>
+      </div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+      <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success">
+        <i class="bi bi-person-check text-xl"></i>
+      </div>
+      <div>
+        <span class="text-label-bold text-outline uppercase tracking-wider">Activos</span>
+        <p class="text-h2 font-h2 text-on-surface">{{ usuariosActivos }}</p>
+      </div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+      <div class="w-12 h-12 rounded-lg bg-error/10 flex items-center justify-center text-error">
+        <i class="bi bi-person-x text-xl"></i>
+      </div>
+      <div>
+        <span class="text-label-bold text-outline uppercase tracking-wider">Inactivos</span>
+        <p class="text-h2 font-h2 text-on-surface">{{ usuariosInactivos }}</p>
+      </div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+      <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
+        <i class="bi bi-person-badge text-xl"></i>
+      </div>
+      <div>
+        <span class="text-label-bold text-outline uppercase tracking-wider">Personal</span>
+        <p class="text-h2 font-h2 text-on-surface">{{ totalPersonal }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab indicator for mobile (hidden on md+) -->
+  <div class="flex border-b border-outline-variant mb-6 overflow-x-auto">
+    <button class="px-6 py-3 text-sm uppercase tracking-wider font-bold border-b-4 transition-colors whitespace-nowrap"
+            [class.border-primary]="activeTab === 'usuarios'"
+            [class.text-primary]="activeTab === 'usuarios'"
+            [class.border-transparent]="activeTab !== 'usuarios'"
+            [class.text-on-surface-variant]="activeTab !== 'usuarios'"
+            (click)="setTab('usuarios')">Clientes</button>
+    <button class="px-6 py-3 text-sm uppercase tracking-wider font-bold border-b-4 transition-colors whitespace-nowrap"
+            [class.border-primary]="activeTab === 'personal'"
+            [class.text-primary]="activeTab === 'personal'"
+            [class.border-transparent]="activeTab !== 'personal'"
+            [class.text-on-surface-variant]="activeTab !== 'personal'"
+            (click)="setTab('personal')">Personal</button>
+    <button class="px-6 py-3 text-sm uppercase tracking-wider font-bold border-b-4 transition-colors whitespace-nowrap"
+            [class.border-primary]="activeTab === 'suscripciones'"
+            [class.text-primary]="activeTab === 'suscripciones'"
+            [class.border-transparent]="activeTab !== 'suscripciones'"
+            [class.text-on-surface-variant]="activeTab !== 'suscripciones'"
+            (click)="setTab('suscripciones')">Suscripciones</button>
+    <button class="px-6 py-3 text-sm uppercase tracking-wider font-bold border-b-4 transition-colors whitespace-nowrap"
+            [class.border-primary]="activeTab === 'estadisticas'"
+            [class.text-primary]="activeTab === 'estadisticas'"
+            [class.border-transparent]="activeTab !== 'estadisticas'"
+            [class.text-on-surface-variant]="activeTab !== 'estadisticas'"
+            (click)="setTab('estadisticas')">Estadisticas</button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-8">
+    <div class="inline-block w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin" role="status"></div>
+    <p class="mt-2 text-outline">Cargando datos...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="bg-error/10 border border-error text-error rounded-lg p-4 mb-6">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+  </div>
+
+  <!-- Tab: Clientes -->
+  <div *ngIf="activeTab === 'usuarios' && !loading">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+      <h5 class="text-h3 font-h3">
+        <i class="bi bi-people me-2 text-secondary"></i>Clientes
+        <span class="inline-block bg-secondary text-white text-xs px-2 py-0.5 rounded ms-1">{{ usuariosFiltrados.length }}</span>
+      </h5>
+      <div class="flex gap-2 w-full md:w-auto">
+        <div class="relative flex-1 md:w-64">
+          <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+          <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Buscar por nombre, DNI, email..."
+                 class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors text-sm"
+                 aria-label="Buscar usuarios">
+        </div>
+        <select [(ngModel)]="filtroEstado"
+                class="py-2 px-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors text-sm">
+          <option value="todos">Todos</option>
+          <option value="activo">Activos</option>
+          <option value="inactivo">Inactivos</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="usuariosFiltrados.length === 0" class="text-center py-8 text-outline">
+      <i class="bi bi-inbox text-4xl mb-2 block"></i>
+      <p>No se encontraron usuarios</p>
+    </div>
+
+    <div *ngIf="usuariosFiltrados.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let u of usuariosFiltrados"
+           class="bg-surface-container-lowest rounded-xl shadow border overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+           [class.border-success]="u.estado === 'ACTIVO'"
+           [class.border-outline-variant]="u.estado !== 'ACTIVO'">
+        <div class="absolute top-0 left-0 w-1 h-full" [class.bg-success]="u.estado === 'ACTIVO'" [class.bg-surface-variant]="u.estado !== 'ACTIVO'"></div>
+        <div class="p-5 flex flex-col flex-1">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center font-bold text-sm">
+                {{ (u.nombre || '')[0]?.toUpperCase() }}{{ (u.apellido || '')[0]?.toUpperCase() }}
+              </div>
+              <div>
+                <h6 class="font-semibold text-on-surface">{{ u.nombre }} {{ u.apellido }}</h6>
+                <small class="text-outline">DNI: {{ u.dni }}</small>
+              </div>
+            </div>
+            <span class="px-2 py-1 rounded text-xs font-bold uppercase"
+                  [class.bg-success]="u.estado === 'ACTIVO'"
+                  [class.text-white]="u.estado === 'ACTIVO'"
+                  [class.bg-surface-variant]="u.estado !== 'ACTIVO'"
+                  [class.text-on-surface-variant]="u.estado !== 'ACTIVO'">
+              {{ u.estado }}
+            </span>
+          </div>
+          <div class="space-y-1 text-sm text-on-surface-variant mb-4">
+            <div class="flex items-center gap-2"><i class="bi bi-envelope text-secondary"></i>{{ u.email || '—' }}</div>
+            <div class="flex items-center gap-2"><i class="bi bi-telephone text-secondary"></i>{{ u.telefono || '—' }}</div>
+          </div>
+          <div class="mt-auto flex gap-2">
+            <button class="flex-1 py-2 border border-secondary text-secondary rounded-lg text-sm font-semibold hover:bg-secondary hover:text-white transition-colors"
+                    (click)="openEditModal(u)">
+              <i class="bi bi-pencil me-1"></i>Editar
+            </button>
+            <button *ngIf="u.estado === 'ACTIVO'" class="py-2 px-3 border border-warning text-warning rounded-lg text-sm hover:bg-warning hover:text-white transition-colors"
+                    (click)="desactivarUsuario(u.dni)">
+              <i class="bi bi-pause"></i>
+            </button>
+            <button *ngIf="u.estado !== 'ACTIVO'" class="py-2 px-3 border border-success text-success rounded-lg text-sm hover:bg-success hover:text-white transition-colors"
+                    (click)="activarUsuario(u.dni)">
+              <i class="bi bi-play"></i>
+            </button>
+            <button class="py-2 px-3 border border-error text-error rounded-lg text-sm hover:bg-error hover:text-white transition-colors"
+                    (click)="eliminarUsuario(u.dni)" title="Eliminar">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Personal -->
+  <div *ngIf="activeTab === 'personal' && !loading">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+      <h5 class="text-h3 font-h3">
+        <i class="bi bi-person-badge me-2 text-secondary"></i>Personal
+        <span class="inline-block bg-secondary text-white text-xs px-2 py-0.5 rounded ms-1">{{ personalFiltrado.length }}</span>
+      </h5>
+      <div class="flex gap-2 w-full md:w-auto">
+        <button class="px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                (click)="openCrearPersonalModal()">
+          <i class="bi bi-plus-lg"></i>Nuevo Personal
+        </button>
+        <div class="relative flex-1 md:w-72">
+          <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+          <input type="text" [(ngModel)]="filtroBusqueda" (ngModelChange)="filtrarPersonal()" placeholder="Buscar personal..."
+                 class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors text-sm">
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="personalFiltrado.length === 0" class="text-center py-8 text-outline">
+      <i class="bi bi-person-x text-4xl mb-2 block"></i>
+      <p>No se encontro personal</p>
+    </div>
+
+    <div *ngIf="personalFiltrado.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let p of personalFiltrado"
+           class="bg-surface-container-lowest rounded-xl shadow border overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+           [class.border-success]="p.estado === 'ACTIVO'"
+           [class.border-outline-variant]="p.estado !== 'ACTIVO'">
+        <div class="p-5 flex flex-col flex-1">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-warning text-white flex items-center justify-center font-bold text-sm">
+                {{ (p.nombre || '')[0]?.toUpperCase() }}{{ (p.apellido || '')[0]?.toUpperCase() }}
+              </div>
+              <div>
+                <h6 class="font-semibold text-on-surface">{{ p.nombre }} {{ p.apellido }}</h6>
+                <small class="text-outline">ID: {{ p.id_personal }} | DNI: {{ p.dni }}</small>
+              </div>
+            </div>
+            <span class="px-2 py-1 rounded text-xs font-bold uppercase"
+                  [class.bg-success]="p.estado === 'ACTIVO'"
+                  [class.text-white]="p.estado === 'ACTIVO'"
+                  [class.bg-surface-variant]="p.estado !== 'ACTIVO'"
+                  [class.text-on-surface-variant]="p.estado !== 'ACTIVO'">
+              {{ p.estado }}
+            </span>
+          </div>
+          <div class="space-y-1 text-sm text-on-surface-variant mb-4">
+            <div class="flex items-center gap-2"><i class="bi bi-envelope text-secondary"></i>{{ p.email || '—' }}</div>
+            <div class="flex items-center gap-2"><i class="bi bi-telephone text-secondary"></i>{{ p.telefono || '—' }}</div>
+          </div>
+          <div class="mt-auto flex gap-2">
+            <button class="flex-1 py-2 border border-secondary text-secondary rounded-lg text-sm font-semibold hover:bg-secondary hover:text-white transition-colors"
+                    (click)="openEditPersonalModal(p)">
+              <i class="bi bi-pencil me-1"></i>Editar
+            </button>
+            <button *ngIf="p.estado === 'ACTIVO'" class="py-2 px-3 border border-warning text-warning rounded-lg text-sm hover:bg-warning hover:text-white transition-colors"
+                    (click)="desactivarPersonal(p.dni)">
+              <i class="bi bi-pause"></i>
+            </button>
+            <button *ngIf="p.estado !== 'ACTIVO'" class="py-2 px-3 border border-success text-success rounded-lg text-sm hover:bg-success hover:text-white transition-colors"
+                    (click)="activarPersonal(p.dni)">
+              <i class="bi bi-play"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Suscripciones/Pagos -->
+  <div *ngIf="activeTab === 'suscripciones'">
+    <!-- Resumen -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-2xl mx-auto">
+      <div class="bg-surface-container-lowest rounded-xl shadow p-6 text-center">
+        <i class="bi bi-cash-stack text-3xl text-success mb-2 block"></i>
+        <h4 class="text-h2 font-h2 text-on-surface">S/ {{ totalIngresos.toFixed(2) }}</h4>
+        <small class="text-outline">Ingresos totales</small>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl shadow p-6 text-center">
+        <i class="bi bi-receipt text-3xl text-secondary mb-2 block"></i>
+        <h4 class="text-h2 font-h2 text-on-surface">{{ pagos.length }}</h4>
+        <small class="text-outline">Total pagos</small>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6 mb-6">
+      <div class="flex justify-between items-center mb-4">
+        <h6 class="font-semibold text-on-surface">
+          <i class="bi bi-pie-chart me-2 text-secondary"></i>
+          {{ showBarChart ? 'Conteo de Suscripciones por Plan' : 'Resumen de Pagos por Plan' }}
+        </h6>
+        <button class="px-3 py-1.5 border border-outline-variant rounded-lg text-sm text-on-surface hover:bg-surface-container transition-colors"
+                (click)="toggleBarChart()">
+          <i class="bi me-1" [class.bi-pie-chart]="showBarChart" [class.bi-bar-chart-line]="!showBarChart"></i>
+          {{ showBarChart ? 'Ver resumen' : 'Ver conteo' }}
+        </button>
+      </div>
+      <div class="text-center max-w-md mx-auto">
+        <canvas #pagosChart id="pagosChart" width="320" height="180"></canvas>
+      </div>
+    </div>
+
+    <!-- Tabla de pagos -->
+    <div class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant overflow-hidden">
+      <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-low">
+        <h6 class="font-semibold text-on-surface"><i class="bi bi-cash-stack me-2 text-secondary"></i>Listado de Pagos</h6>
+        <select [(ngModel)]="filtroPagoEstado"
+                class="py-1.5 px-3 bg-surface-container-lowest border border-outline-variant rounded-lg text-sm focus:border-secondary outline-none">
+          <option value="todos">Todos</option>
+          <option value="pagado">Pagados</option>
+          <option value="completed">Completados</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="fallido">Fallidos</option>
+        </select>
+      </div>
+      <div class="p-4">
+        <div *ngIf="pagosFiltrados.length === 0" class="text-center py-8 text-outline">
+          <i class="bi bi-file-earmark-x text-4xl mb-2 block"></i>
+          <p>No se encontraron pagos</p>
+        </div>
+
+        <div *ngIf="pagosFiltrados.length > 0" class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-outline-variant">
+                <th class="py-3 px-4 text-label-bold text-on-surface-variant uppercase text-xs tracking-wider">ID</th>
+                <th class="py-3 px-4 text-label-bold text-on-surface-variant uppercase text-xs tracking-wider">Usuario</th>
+                <th class="py-3 px-4 text-label-bold text-on-surface-variant uppercase text-xs tracking-wider">Monto</th>
+                <th class="py-3 px-4 text-label-bold text-on-surface-variant uppercase text-xs tracking-wider">Plan</th>
+                <th class="py-3 px-4 text-label-bold text-on-surface-variant uppercase text-xs tracking-wider">Estado</th>
+                <th class="py-3 px-4 text-label-bold text-on-surface-variant uppercase text-xs tracking-wider">Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of pagosFiltrados" class="border-b border-outline-variant/50 hover:bg-surface-container/50 transition-colors">
+                <td class="py-3 px-4 font-semibold text-on-surface">{{ p.id }}</td>
+                <td class="py-3 px-4">{{ getUserName(p.userId || p.user) }}</td>
+                <td class="py-3 px-4 font-bold text-success">S/{{ p.monto }}</td>
+                <td class="py-3 px-4">
+                  <span class="px-2 py-1 rounded text-xs font-medium" [class]="planBadgeClass(p.plan, p.monto)"
+                  >{{ getPlanDisplayName(p.plan, p.monto) }}</span>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="px-2 py-1 rounded text-xs font-medium"
+                        [class.bg-success]="(p.estado || '').toLowerCase() === 'pagado' || (p.estado || '').toLowerCase() === 'completado' || p.estado === 'COMPLETED'"
+                        [class.text-white]="(p.estado || '').toLowerCase() === 'pagado' || (p.estado || '').toLowerCase() === 'completado' || p.estado === 'COMPLETED'"
+                        [class.bg-warning]="(p.estado || '').toLowerCase() === 'pendiente'"
+                        [class.text-white]="(p.estado || '').toLowerCase() === 'pendiente'"
+                        [class.bg-error]="(p.estado || '').toLowerCase() === 'fallido'"
+                        [class.text-white]="(p.estado || '').toLowerCase() === 'fallido'"
+                  >{{ p.estado || '-' }}</span>
+                </td>
+                <td class="py-3 px-4 text-outline">{{ p.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Estadisticas -->
+  <div *ngIf="activeTab === 'estadisticas' && !loading" class="space-y-6">
+    <!-- KPI Cards Row 1 -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"><i class="bi bi-people text-xl"></i></div>
+        <div>
+          <span class="text-label-bold text-outline uppercase tracking-wider">Total Clientes</span>
+          <p class="text-h2 font-h2 text-on-surface">{{ totalUsuarios }}</p>
+          <small class="text-success">{{ totalUsuarios > 0 ? (usuariosActivos / totalUsuarios * 100).toFixed(0) : 0 }}% activos</small>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center text-warning"><i class="bi bi-person-badge text-xl"></i></div>
+        <div>
+          <span class="text-label-bold text-outline uppercase tracking-wider">Personal</span>
+          <p class="text-h2 font-h2 text-on-surface">{{ totalPersonal }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success"><i class="bi bi-cash-stack text-xl"></i></div>
+        <div>
+          <span class="text-label-bold text-outline uppercase tracking-wider">Ingresos Totales</span>
+          <p class="text-h2 font-h2 text-on-surface">S/ {{ (ingresosTotales || 0).toFixed(2) }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-[#9b59b6]/10 flex items-center justify-center text-[#9b59b6]"><i class="bi bi-card-checklist text-xl"></i></div>
+        <div>
+          <span class="text-label-bold text-outline uppercase tracking-wider">Membresias Activas</span>
+          <p class="text-h2 font-h2 text-on-surface">{{ membresiasActivas }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Cards Row 2 -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success"><i class="bi bi-calendar-check text-xl"></i></div>
+        <div>
+          <span class="text-label-bold text-outline uppercase tracking-wider">Clases Activas</span>
+          <p class="text-h2 font-h2 text-on-surface">{{ clasesActivas }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"><i class="bi bi-person-plus text-xl"></i></div>
+        <div>
+          <span class="text-label-bold text-outline uppercase tracking-wider">Nuevos este mes</span>
+          <p class="text-h2 font-h2 text-on-surface">{{ nuevosUsuariosMes }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-[#1abc9c]/10 flex items-center justify-center text-[#1abc9c]"><i class="bi bi-graph-up text-xl"></i></div>
+        <div>
+          <span class="text-label-bold text-outline uppercase tracking-wider">Ingresos del mes</span>
+          <p class="text-h2 font-h2 text-on-surface">S/ {{ (ingresosMesActual || 0).toFixed(2) }}</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-lg bg-error/10 flex items-center justify-center text-error"><i class="bi bi-exclamation-triangle text-xl"></i></div>
+        <div>
+          <span class="text-label-bold text-outline uppercase tracking-wider">Por vencer</span>
+          <p class="text-h2 font-h2 text-on-surface">{{ membresiasPorVencer }}</p>
+          <small class="text-outline">7 dias</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+      <div class="md:col-span-3 bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6">
+        <div class="mb-4">
+          <h6 class="font-semibold text-on-surface"><i class="bi bi-graph-up me-2 text-secondary"></i>Ingresos Mensuales</h6>
+        </div>
+        <div *ngIf="ingresosMensuales.length === 0" class="text-center py-8 text-outline">
+          <i class="bi bi-bar-chart text-4xl mb-2 block"></i>
+          <p>No hay datos de ingresos</p>
+        </div>
+        <canvas #ingresosChart id="ingresosChart" height="220"></canvas>
+      </div>
+
+      <div class="md:col-span-2 bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6">
+        <div class="mb-4">
+          <h6 class="font-semibold text-on-surface"><i class="bi bi-pie-chart me-2 text-secondary"></i>Distribucion de Planes</h6>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-semibold"><i class="bi bi-star me-2 text-warning"></i>Fit</span>
+              <span class="px-2 py-1 bg-secondary text-white text-xs rounded">{{ planBasico }}</span>
+            </div>
+            <div class="h-2 bg-surface-container rounded-full overflow-hidden">
+              <div class="h-full bg-secondary transition-all duration-500"
+                   [style.width.%]="(planBasico + planPremium) > 0 ? (planBasico / (planBasico + planPremium) * 100) : 0"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="font-semibold"><i class="bi bi-gem me-2 text-error"></i>Black</span>
+              <span class="px-2 py-1 bg-error text-white text-xs rounded">{{ planPremium }}</span>
+            </div>
+            <div class="h-2 bg-surface-container rounded-full overflow-hidden">
+              <div class="h-full bg-error transition-all duration-500"
+                   [style.width.%]="(planBasico + planPremium) > 0 ? (planPremium / (planBasico + planPremium) * 100) : 0"></div>
+            </div>
+          </div>
+          <div class="pt-4 border-t border-outline-variant text-center">
+            <h5 class="text-h2 font-h2 text-on-surface">{{ planBasico + planPremium }}</h5>
+            <small class="text-outline">Total membresias</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Row -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+      <div class="md:col-span-3 bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6">
+        <div class="mb-4">
+          <h6 class="font-semibold text-on-surface"><i class="bi bi-fire me-2 text-error"></i>Clases Populares</h6>
+        </div>
+        <div *ngIf="clasesPopulares.length === 0" class="text-center py-8 text-outline">
+          <i class="bi bi-inbox text-4xl mb-2 block"></i>
+          <p>No hay datos de clases</p>
+        </div>
+        <div *ngFor="let clase of clasesPopulares | slice:0:6" class="mb-4">
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-semibold">{{ clase.nombre }}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium"
+                  [class.bg-success]="clase.estado === 'ACTIVO' || clase.estado === 'Activa'"
+                  [class.text-white]="clase.estado === 'ACTIVO' || clase.estado === 'Activa'"
+                  [class.bg-surface-variant]="clase.estado !== 'ACTIVO' && clase.estado !== 'Activa'"
+                  [class.text-on-surface-variant]="clase.estado !== 'ACTIVO' && clase.estado !== 'Activa'"
+            >{{ clase.inscripciones }} inscritos</span>
+          </div>
+          <div class="h-2 bg-surface-container rounded-full overflow-hidden">
+            <div class="h-full bg-secondary transition-all duration-500"
+                 [style.width.%]="(clase.inscripciones / maxInscripciones) * 100"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6">
+        <div class="mb-4">
+          <h6 class="font-semibold text-on-surface"><i class="bi bi-bell me-2 text-warning"></i>Alertas y Resumen</h6>
+        </div>
+
+        <div *ngIf="membresiasPorVencer > 0" class="bg-warning/10 border border-warning/30 text-warning rounded-lg p-3 mb-3 flex items-center gap-2">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <div><strong>{{ membresiasPorVencer }} membresias</strong> por vencer en los proximos 7 dias</div>
+        </div>
+
+        <div class="bg-secondary/10 border border-secondary/30 text-secondary rounded-lg p-3 mb-3 flex items-center gap-2">
+          <i class="bi bi-person-plus-fill"></i>
+          <div><strong>{{ nuevosUsuariosMes }} nuevos usuarios</strong> registrados este mes</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-secondary mb-1">{{ totalUsuarios > 0 ? (usuariosActivos / totalUsuarios * 100).toFixed(0) : 0 }}%</div>
+            <small class="text-outline">Usuarios activos</small>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-secondary mb-1">{{ totalClases > 0 ? (clasesActivas / totalClases * 100).toFixed(0) : 0 }}%</div>
+            <small class="text-outline">Clases activas</small>
+          </div>
+        </div>
+
+        <div *ngIf="membresiasList.length > 0" class="mt-4 pt-4 border-t border-outline-variant">
+          <h6 class="text-sm font-semibold text-outline mb-2"><i class="bi bi-clock me-1"></i>Membresias proximas a vencer</h6>
+          <div *ngFor="let m of membresiasList | slice:0:4"
+               class="flex justify-between items-center py-2 border-b border-outline-variant/50">
+            <small>{{ m.nombreUsuario }}</small>
+            <small class="text-outline">{{ m.fechaFin | date:'dd/MM/yyyy' }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal editar/crear usuario/personal -->
+<div *ngIf="showEditModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+     (click)="closeEditModal()">
+  <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+       (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center p-6 border-b border-outline-variant">
+      <h5 class="text-h2 font-h2 text-primary-container">
+        <i class="bi bi-pencil-square me-2"></i>
+        <span *ngIf="isCreatingPersonal">Nuevo Personal</span>
+        <span *ngIf="!isCreatingPersonal && editingPersonal">Editar Personal</span>
+        <span *ngIf="!isCreatingPersonal && !editingPersonal">Editar Usuario</span>
+      </h5>
+      <button type="button" class="text-outline hover:text-on-surface transition-colors" (click)="closeEditModal()" aria-label="Cerrar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div *ngIf="modalError" class="mx-6 mt-4 bg-error/10 border border-error text-error rounded-lg px-4 py-3 flex items-center gap-2 text-sm">
+      <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+      <span>{{ modalError }}</span>
+    </div>
+    <form class="p-6 space-y-4" *ngIf="editingUser" #adminForm="ngForm">
+      <div>
+        <label class="block text-label-bold text-on-surface-variant mb-1">DNI</label>
+        <input type="text" [(ngModel)]="editingUser.dni" name="dni" [disabled]="!isCreatingPersonal" required pattern="^[0-9]{8}$" maxlength="8"
+               class="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors disabled:bg-surface-container">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-label-bold text-on-surface-variant mb-1">Nombre</label>
+          <input type="text" [(ngModel)]="editingUser.nombre" name="nombre" required maxlength="50"
+                 class="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+        </div>
+        <div>
+          <label class="block text-label-bold text-on-surface-variant mb-1">Apellido</label>
+          <input type="text" [(ngModel)]="editingUser.apellido" name="apellido" required maxlength="50"
+                 class="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+        </div>
+      </div>
+      <div>
+        <label class="block text-label-bold text-on-surface-variant mb-1">Email</label>
+        <input type="email" [(ngModel)]="editingUser.email" name="email" required
+               class="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+      </div>
+      <div>
+        <label class="block text-label-bold text-on-surface-variant mb-1">Telefono</label>
+        <input type="text" [(ngModel)]="editingUser.telefono" name="telefono" required pattern="^9[0-9]{8}$" maxlength="9"
+               class="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+      </div>
+      <div>
+        <label class="block text-label-bold text-on-surface-variant mb-1">Direccion</label>
+        <input type="text" [(ngModel)]="editingUser.direccion" name="direccion" required placeholder="Direccion del usuario"
+               class="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+      </div>
+      <div>
+        <label class="block text-label-bold text-on-surface-variant mb-1">Estado</label>
+        <select [(ngModel)]="editingUser.estado" name="estado"
+                class="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+          <option value="ACTIVO">Activo</option>
+          <option value="INACTIVO">Inactivo</option>
+        </select>
+      </div>
+      <div *ngIf="isCreatingPersonal">
+        <label class="block text-label-bold text-on-surface-variant mb-1">Contrasena</label>
+        <div class="relative">
+          <input [type]="showPasswordModal ? 'text' : 'password'" [(ngModel)]="editingUser.passwordHash" name="passwordHash" placeholder="Contrasena para el nuevo personal"
+                 class="w-full px-4 py-2 pr-10 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+          <button type="button" (click)="showPasswordModal = !showPasswordModal"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors"
+                  [attr.aria-label]="showPasswordModal ? 'Ocultar contraseña' : 'Ver contraseña'">
+            <i [class]="showPasswordModal ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+    <div class="flex justify-end gap-3 p-6 border-t border-outline-variant">
+      <button class="px-6 py-2 border border-outline-variant rounded-lg text-on-surface font-semibold hover:bg-surface-container transition-colors"
+              (click)="closeEditModal()">Cancelar</button>
+      <button class="px-6 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-200"
+              (click)="saveUserEdit()">
+        <i class="bi bi-check me-1"></i>{{ isCreatingPersonal ? 'Crear' : 'Guardar' }}
+      </button>
+    </div>
+  </div>
+</div>

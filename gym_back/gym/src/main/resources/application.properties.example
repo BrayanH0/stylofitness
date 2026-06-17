@@ -1,0 +1,12 @@
+spring.application.name=gym
+app.frontend.url=https://tu-frontend.vercel.app
+jwt.secret=TU_JWT_SECRET_AQUI_MINIMO_256_BITS
+spring.datasource.username=gym
+spring.datasource.password=TU_PASSWORD_DB
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521:xe
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+stripe.secret.key=sk_test_TU_CLAVE_STRIPE_AQUI
+stripe.webhook.secret=whsec_TU_WEBHOOK_SECRET_AQUI

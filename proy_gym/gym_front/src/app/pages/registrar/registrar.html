@@ -1,0 +1,315 @@
+<app-navbar></app-navbar>
+
+<div class="min-h-screen bg-surface-container-low pb-20" id="main-content">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-primary-container to-secondary pt-16 pb-32 px-6 text-center text-on-primary">
+    <div class="max-w-[1320px] mx-auto flex flex-col items-center">
+      <i class="bi bi-person-plus-fill text-6xl mb-4"></i>
+      <h1 class="text-h1 font-bold text-white mb-2">Registro</h1>
+      <p class="text-body-lg text-white opacity-90 max-w-xl mx-auto">
+        Crea tu cuenta y comienza tu transformacion
+      </p>
+    </div>
+  </header>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-10">
+    <!-- Step indicator -->
+    <div class="bg-surface-container-lowest rounded-xl shadow p-6 mb-8" role="group" aria-label="Pasos del registro">
+      <div class="grid grid-cols-3">
+        <!-- Step 1 -->
+        <div class="flex flex-col items-center relative">
+          <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-bold shadow-md z-10">1</div>
+          <span class="text-label-bold text-secondary hidden sm:block mt-2">Datos Personales</span>
+          <!-- Line to next step -->
+          <div class="absolute top-5 left-1/2 w-full h-1 bg-secondary z-0"></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex flex-col items-center relative">
+          <div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-bold border-2 border-surface-variant z-10">2</div>
+          <span class="text-label-bold text-on-surface-variant hidden sm:block mt-2">Suscripcion</span>
+          <!-- Left line (completed) -->
+          <div class="absolute top-5 right-1/2 w-full h-1 bg-secondary z-0"></div>
+          <!-- Right line (pending) -->
+          <div class="absolute top-5 left-1/2 w-full h-1 bg-surface-variant z-0"></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex flex-col items-center relative">
+          <div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-bold border-2 border-surface-variant z-10">3</div>
+          <span class="text-label-bold text-on-surface-variant hidden sm:block mt-2">Resumen</span>
+          <!-- Left line -->
+          <div class="absolute top-5 right-1/2 w-full h-1 bg-surface-variant z-0"></div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="showSuccess" class="alert alert-success mb-4" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i>Usuario registrado exitosamente!
+    </div>
+
+    <!-- Registration date -->
+    <div class="text-center mb-6">
+      <span class="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-3 py-2 rounded-lg text-sm font-semibold">
+        <i class="bi bi-calendar-check"></i> Fecha de Registro: {{ usuario.fecha_registro }}
+      </span>
+    </div>
+
+    <form #registerForm="ngForm" id="registrationForm" (ngSubmit)="onSubmit(registerForm)" (reset)="onReset(registerForm)" novalidate
+          class="flex flex-col gap-8"
+          [class.was-validated]="registerForm.submitted && !registerForm.valid">
+      <!-- Personal Info -->
+      <div class="bg-surface-container-lowest rounded-xl shadow p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <h2 class="text-headline-md font-headline-md text-primary mb-6 flex items-center gap-2 border-b border-surface-variant pb-4">
+          <i class="bi bi-person-circle text-secondary"></i> Informacion Personal
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-1">
+            <label for="dni" class="text-label-bold text-on-surface-variant">DNI <span class="text-error">*</span></label>
+            <div class="relative">
+              <i class="bi bi-card-text absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+              <input type="text" id="dni" name="dni" [(ngModel)]="usuario.dni"
+                     class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors"
+                     required maxlength="8" pattern="^[0-9]{8}$" inputmode="numeric"
+                     placeholder="8 digitos" aria-required="true"
+                     #dniRef="ngModel">
+            </div>
+            <div class="text-error text-sm" *ngIf="dniRef.invalid && dniRef.touched">
+              DNI debe tener exactamente 8 dígitos numéricos.
+            </div>
+            <div class="text-error text-sm" *ngIf="dniError">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ dniError }}
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="birthDate" class="text-label-bold text-on-surface-variant">Fecha de Nacimiento <span class="text-error">*</span></label>
+            <div class="relative">
+              <i class="bi bi-calendar absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+              <input type="date" id="birthDate" name="fecha_nacimiento" [(ngModel)]="usuario.fecha_nacimiento"
+                     class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors"
+                     required [max]="maxDate" [min]="minDate"
+                     #fechaRef="ngModel">
+            </div>
+            <div class="text-error text-sm" *ngIf="showDateError || (fechaRef.invalid && fechaRef.touched)">
+              Debes tener entre 10 y 100 años.
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="firstName" class="text-label-bold text-on-surface-variant">Nombres <span class="text-error">*</span></label>
+            <div class="relative">
+              <i class="bi bi-person absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+              <input type="text" id="firstName" name="nombre" [(ngModel)]="usuario.nombre"
+                     class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors"
+                     required placeholder="Tus nombres" aria-required="true"
+                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" maxlength="50"
+                     #nombreRef="ngModel">
+            </div>
+            <div class="text-error text-sm" *ngIf="nombreRef.invalid && nombreRef.touched">
+              Solo se permiten letras y espacios.
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="lastName" class="text-label-bold text-on-surface-variant">Apellidos <span class="text-error">*</span></label>
+            <div class="relative">
+              <i class="bi bi-person absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+              <input type="text" id="lastName" name="apellido" [(ngModel)]="usuario.apellido"
+                     class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors"
+                     required placeholder="Tus apellidos" aria-required="true"
+                     pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" maxlength="50"
+                     #apellidoRef="ngModel">
+            </div>
+            <div class="text-error text-sm" *ngIf="apellidoRef.invalid && apellidoRef.touched">
+              Solo se permiten letras y espacios.
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="phone" class="text-label-bold text-on-surface-variant">Telefono <span class="text-error">*</span></label>
+            <div class="relative">
+              <i class="bi bi-telephone absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+              <input type="tel" id="phone" name="telefono" [(ngModel)]="usuario.telefono"
+                     class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors"
+                     required pattern="^9[0-9]{8}$" maxlength="9" inputmode="numeric"
+                     placeholder="Ej: 987654321" #telefonoRef="ngModel">
+            </div>
+            <div class="text-error text-sm" *ngIf="telefonoRef.invalid && telefonoRef.touched">
+              Teléfono debe tener 9 dígitos y comenzar con 9.
+            </div>
+            <div class="text-error text-sm" *ngIf="telefonoError">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ telefonoError }}
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="email" class="text-label-bold text-on-surface-variant">Correo Electronico <span class="text-error">*</span></label>
+            <div class="relative">
+              <i class="bi bi-envelope absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+              <input type="email" id="email" name="email" [(ngModel)]="usuario.email"
+                     class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors"
+                     required placeholder="correo@ejemplo.com" #emailRef="ngModel">
+            </div>
+            <div class="text-error text-sm" *ngIf="emailRef.invalid && emailRef.touched">
+              Ingresa un correo electrónico válido.
+            </div>
+            <div class="text-error text-sm" *ngIf="emailError">
+              <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ emailError }}
+            </div>
+          </div>
+          <div class="flex flex-col gap-1 md:col-span-2">
+            <label for="address" class="text-label-bold text-on-surface-variant">Direccion <span class="text-error">*</span></label>
+            <div class="relative">
+              <i class="bi bi-geo-alt absolute left-3 top-3 text-outline"></i>
+              <textarea id="address" name="direccion" [(ngModel)]="usuario.direccion"
+                        class="w-full pl-10 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors"
+                        rows="2" required placeholder="Tu direccion completa" aria-required="true"
+                        #dirRef="ngModel"></textarea>
+            </div>
+            <div class="text-error text-sm" *ngIf="dirRef.invalid && dirRef.touched">
+              La dirección es obligatoria.
+            </div>
+          </div>
+          <div class="flex flex-col gap-1 md:col-span-2">
+            <label for="password" class="text-label-bold text-on-surface-variant">Contrasena <span class="text-error">*</span></label>
+            <div class="relative">
+              <i class="bi bi-lock absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+              <input [type]="showPassword ? 'text' : 'password'" id="password" name="password" [(ngModel)]="usuario.password"
+                     class="w-full pl-10 pr-10 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors"
+                     required minlength="8" pattern="^(?=.*[A-Z])(?=.*[0-9]).{8,}$"
+                     placeholder="Minimo 8 caracteres, 1 mayuscula y 1 numero" #passRef="ngModel">
+              <button type="button" (click)="showPassword = !showPassword"
+                      class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary rounded-full p-1">
+                <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+              </button>
+            </div>
+            <div class="text-error text-sm" *ngIf="passRef.invalid && passRef.touched">
+              Mínimo 8 caracteres, 1 mayúscula y 1 número.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Membership -->
+      <div class="bg-surface-container-lowest rounded-xl shadow p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <h2 class="text-headline-md font-headline-md text-primary mb-6 flex items-center gap-2 border-b border-surface-variant pb-4">
+          <i class="bi bi-credit-card text-secondary"></i> Tipo de Suscripcion <span class="text-error">*</span>
+        </h2>
+
+        <!-- Plan selector -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <button type="button"
+                  class="relative block w-full text-left border-2 rounded-xl p-6 transition-all duration-300"
+                  [class.border-primary]="planSeleccionado?.key === 'black'"
+                  [class.bg-primary-fixed]="planSeleccionado?.key === 'black'"
+                  [class.border-outline-variant]="planSeleccionado?.key !== 'black'"
+                  (click)="seleccionarPlan('black')">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-headline-md font-headline-md text-primary">PLAN Black</h3>
+              <i class="bi bi-check-circle-fill text-primary transition-opacity"
+                 [class.opacity-0]="planSeleccionado?.key !== 'black'"></i>
+            </div>
+            <div class="text-3xl font-black text-secondary mb-2">S/ 89,90 <span class="text-base text-on-surface-variant font-normal">/mes</span></div>
+            <ul class="space-y-2 text-body-md text-on-surface-variant">
+              <li class="flex items-center gap-2">
+                <i class="bi bi-check text-sm text-secondary"></i> Acceso total a todas las sedes y beneficios exclusivos
+              </li>
+            </ul>
+          </button>
+          <button type="button"
+                  class="relative block w-full text-left border-2 rounded-xl p-6 transition-all duration-300"
+                  [class.border-secondary]="planSeleccionado?.key === 'fit'"
+                  [class.bg-secondary-fixed]="planSeleccionado?.key === 'fit'"
+                  [class.border-outline-variant]="planSeleccionado?.key !== 'fit'"
+                  (click)="seleccionarPlan('fit')">
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-headline-md font-headline-md text-primary">PLAN Fit</h3>
+              <i class="bi bi-check-circle-fill text-secondary transition-opacity"
+                 [class.opacity-0]="planSeleccionado?.key !== 'fit'"></i>
+            </div>
+            <div class="text-3xl font-black text-secondary mb-2">S/ 69,90 <span class="text-base text-on-surface-variant font-normal">/mes</span></div>
+            <ul class="space-y-2 text-body-md text-on-surface-variant">
+              <li class="flex items-center gap-2">
+                <i class="bi bi-check text-sm text-secondary"></i> Acceso a una sede con los beneficios esenciales
+              </li>
+            </ul>
+          </button>
+        </div>
+
+        <!-- Duration selector -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="membershipOptions">
+          <button type="button"
+                  class="block w-full text-left border rounded-xl p-5 transition-all duration-200"
+                  [class.border-secondary]="membershipType === '1-mes'"
+                  [class.bg-secondary-fixed]="membershipType === '1-mes'"
+                  [class.border-outline-variant]="membershipType !== '1-mes'"
+                  data-value="1-mes" data-months="1"
+                  [attr.data-price]="planSeleccionado?.precio1m || '0'"
+                  [attr.data-name]="nombrePlan + ' - 1 Mes'"
+                  (click)="selectMembership('1-mes', 1)"
+                  (keydown.enter)="selectMembership('1-mes', 1)"
+                  [attr.aria-pressed]="membershipType === '1-mes'">
+            <i class="bi bi-check-circle-fill me-1 text-secondary transition-opacity"
+               [class.opacity-0]="membershipType !== '1-mes'"></i>
+            <strong>1 Mes</strong> — S/ {{ precio1m }}
+            <br><span class="text-sm text-on-surface-variant">Acceso a instalaciones, pesas, cardio, vestidores y asesoria basica</span>
+          </button>
+          <button type="button"
+                  class="block w-full text-left border rounded-xl p-5 transition-all duration-200"
+                  [class.border-secondary]="membershipType === '3-meses'"
+                  [class.bg-secondary-fixed]="membershipType === '3-meses'"
+                  [class.border-outline-variant]="membershipType !== '3-meses'"
+                  data-value="3-meses" data-months="3"
+                  [attr.data-price]="planSeleccionado?.precio3m || '0'"
+                  [attr.data-name]="nombrePlan + ' - 3 Meses'"
+                  (click)="selectMembership('3-meses', 3)"
+                  (keydown.enter)="selectMembership('3-meses', 3)"
+                  [attr.aria-pressed]="membershipType === '3-meses'">
+            <i class="bi bi-check-circle-fill me-1 text-secondary transition-opacity"
+               [class.opacity-0]="membershipType !== '3-meses'"></i>
+            <strong>3 Meses</strong> — S/ {{ precio3m }}/mes
+            <span class="inline-block bg-primary text-white text-xs px-2 py-0.5 rounded ms-1">POPULAR</span>
+            <br><span class="text-sm text-on-surface-variant">Total S/ {{ precio3mTotal }} · Paga menos por mas, clase grupal gratis, evaluacion fisica inicial</span>
+          </button>
+        </div>
+        <input type="hidden" name="membershipType" [(ngModel)]="membershipType" aria-hidden="true">
+        <input type="hidden" name="fecha_registro" [(ngModel)]="usuario.fecha_registro" aria-hidden="true">
+        <div *ngIf="showMembershipError" class="text-error text-sm mt-2" role="alert">
+          Selecciona un tipo de suscripcion.
+        </div>
+      </div>
+
+      <!-- Date Summary -->
+      <div class="bg-surface-container-lowest rounded-xl shadow p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <h2 class="text-headline-md font-headline-md text-primary mb-6 flex items-center gap-2 border-b border-surface-variant pb-4">
+          <i class="bi bi-calendar-range text-secondary"></i> Resumen
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-primary-fixed/30 rounded-xl p-5 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+            <div class="text-secondary text-2xl mb-2"><i class="bi bi-calendar-check"></i></div>
+            <div class="text-label-bold text-on-surface-variant mb-1">Inicio</div>
+            <div class="text-h2 font-h2 text-on-surface">{{ startDate }}</div>
+          </div>
+          <div class="bg-primary-fixed/30 rounded-xl p-5 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+            <div class="text-secondary text-2xl mb-2"><i class="bi bi-calendar-x"></i></div>
+            <div class="text-label-bold text-on-surface-variant mb-1">Fin</div>
+            <div class="text-h2 font-h2 text-on-surface">{{ endDate }}</div>
+          </div>
+          <div class="bg-primary-fixed/30 rounded-xl p-5 text-center transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
+            <div class="text-secondary text-2xl mb-2"><i class="bi bi-clock"></i></div>
+            <div class="text-label-bold text-on-surface-variant mb-1">Duracion</div>
+            <div class="text-h2 font-h2 text-on-surface">{{ durationText }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-between pt-2">
+        <button type="reset"
+                class="px-6 py-3 border-2 border-outline-variant rounded-lg text-on-surface font-semibold hover:bg-surface-container transition-colors flex items-center gap-2">
+          <i class="bi bi-arrow-clockwise"></i> Limpiar
+        </button>
+        <button type="submit"
+                class="bg-gradient-to-r from-primary to-on-tertiary-fixed-variant text-white px-10 py-4 rounded-lg font-bold uppercase tracking-wide hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex items-center gap-2">
+          <i class="bi bi-arrow-right"></i> Siguiente
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

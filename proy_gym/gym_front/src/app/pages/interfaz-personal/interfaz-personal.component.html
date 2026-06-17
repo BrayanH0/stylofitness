@@ -1,0 +1,449 @@
+<app-navbar></app-navbar>
+
+<!-- Main Content -->
+<main>
+
+<!-- PERFIL HEADER -->
+<header class="bg-gradient-to-r from-primary-container to-surface-tint text-on-primary shadow">
+  <div class="max-w-[1320px] mx-auto px-6 py-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-full bg-secondary text-white flex items-center justify-center text-xl font-bold shadow-lg">
+          {{ (usuario?.nombre || '?')[0] }}{{ (usuario?.apellido || '?')[0] }}
+        </div>
+        <div>
+          <h1 class="text-h1 font-bold text-white mb-1">{{ usuario?.nombre || '' }} {{ usuario?.apellido || '' }}</h1>
+          <p class="text-sm text-white/80 mb-1">
+            <i class="bi bi-person-badge me-1"></i>{{ usuario?.rol || 'Personal' }}
+          </p>
+          <p class="text-sm text-white/80">
+            <i class="bi bi-envelope me-1"></i>{{ usuario?.email || '—' }}
+            <span class="mx-2">·</span>
+            <i class="bi bi-card-text me-1"></i>DNI: {{ usuario?.dni || '—' }}
+          </p>
+        </div>
+      </div>
+      <button class="bg-gradient-to-r from-warning to-warning text-white px-6 py-3 rounded-lg font-bold uppercase text-sm tracking-wide shadow hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-2"
+              (click)="openCreateModal()">
+        <i class="bi bi-plus-circle"></i> Nueva clase
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-[1320px] mx-auto px-6 py-6">
+
+  <!-- STATS -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="dashboard">
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
+      <div class="flex justify-between items-start mb-3">
+        <div class="p-2 bg-secondary-fixed/50 rounded-lg text-secondary">
+          <i class="bi bi-calendar-event"></i>
+        </div>
+        <span class="text-label-bold text-outline">Clases</span>
+      </div>
+      <h3 class="text-h2 font-h2 text-on-surface">{{ clases.length }}</h3>
+    </div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
+      <div class="flex justify-between items-start mb-3">
+        <div class="p-2 bg-success/10 rounded-lg text-success">
+          <i class="bi bi-check-circle"></i>
+        </div>
+        <span class="text-label-bold text-outline">Activas</span>
+      </div>
+      <h3 class="text-h2 font-h2 text-on-surface">{{ clasesActivas }}</h3>
+    </div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
+      <div class="flex justify-between items-start mb-3">
+        <div class="p-2 bg-warning/10 rounded-lg text-warning">
+          <i class="bi bi-people"></i>
+        </div>
+        <span class="text-label-bold text-outline">Este mes</span>
+      </div>
+      <h3 class="text-h2 font-h2 text-on-surface">{{ clases.length }}</h3>
+    </div>
+    <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
+      <div class="flex justify-between items-start mb-3">
+        <div class="p-2 bg-secondary/10 rounded-lg text-secondary">
+          <i class="bi bi-clock-history"></i>
+        </div>
+        <span class="text-label-bold text-outline">Hoy</span>
+      </div>
+      <h3 class="text-h2 font-h2 text-on-surface">{{ fechaActual }}</h3>
+    </div>
+  </div>
+
+  <div id="calendario">
+  <!-- Navegacion del calendario -->
+  <div class="flex justify-between items-center mb-4">
+    <div class="flex items-center gap-2">
+      <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors"
+              (click)="prevMonth()" aria-label="Mes anterior">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <h4 class="text-h2 font-h2 mx-2">{{ monthLabel }}</h4>
+      <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors"
+              (click)="nextMonth()" aria-label="Mes siguiente">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+      <button class="px-3 py-2 border border-secondary text-secondary rounded-lg hover:bg-secondary hover:text-white transition-colors text-sm font-semibold ms-2"
+              (click)="goToday()">Hoy</button>
+    </div>
+    <span class="text-sm text-outline">{{ clases.length }} clases en total</span>
+  </div>
+
+  <!-- Calendario Grid -->
+  <div class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant overflow-hidden mb-6">
+    <div class="p-6">
+      <!-- Encabezados de dias -->
+      <div class="grid grid-cols-7 gap-1 mb-2">
+        <div *ngFor="let dia of diasSemana" class="text-center text-label-bold text-on-surface-variant py-2">{{ dia }}</div>
+      </div>
+
+      <!-- Celdas del calendario -->
+      <div *ngIf="!loading" class="grid grid-cols-7 gap-2">
+        <div *ngFor="let day of calendarDays"
+             class="min-h-[80px] p-2 rounded-lg border transition-colors cursor-pointer relative"
+             [class.bg-surface-container-low]="day.isCurrentMonth && !day.isToday && day.date !== selectedDate"
+             [class.border-outline-variant]="day.isCurrentMonth && day.date !== selectedDate"
+             [class.bg-white]="day.isToday"
+             [class.border-secondary]="day.isToday || day.date === selectedDate"
+             [class.border-2]="day.isToday || day.date === selectedDate"
+             [class.text-on-surface]="day.isCurrentMonth"
+             [class.text-on-surface-variant]="!day.isCurrentMonth"
+             [class.opacity-40]="!day.isCurrentMonth"
+             [class.hover:bg-surface-container]="day.isCurrentMonth"
+             (click)="onDayClick(day)">
+          <div class="font-semibold mb-1">{{ day.dayNumber }}</div>
+          <div class="space-y-1">
+            <div *ngFor="let c of day.clases | slice:0:2"
+                 class="text-xs px-1.5 py-0.5 rounded truncate cursor-pointer"
+                 [class.bg-success]="c.estado === 'activo' || c.estado === 'ACTIVO'"
+                 [class.text-white]="c.estado === 'activo' || c.estado === 'ACTIVO'"
+                 [class.bg-surface-variant]="c.estado !== 'activo' && c.estado !== 'ACTIVO'"
+                 [class.text-on-surface-variant]="c.estado !== 'activo' && c.estado !== 'ACTIVO'"
+                 (click)="selectClaseFromCalendar(c); $event.stopPropagation()">
+              {{ c.nombre }}
+            </div>
+            <div *ngIf="day.clases.length > 2" class="text-xs text-outline">+{{ day.clases.length - 2 }} mas</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="text-center py-8">
+        <div class="inline-block w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin" role="status"></div>
+        <p class="mt-2 text-outline">Cargando clases...</p>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Panel de detalle del dia seleccionado -->
+  <div *ngIf="selectedDate" class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant overflow-hidden mb-6">
+    <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-low">
+      <h6 class="font-semibold text-on-surface">
+        <i class="bi bi-calendar3 me-2 text-secondary"></i>
+        Clases del {{ selectedDate | date:'dd/MM/yyyy' }}
+        <span class="inline-block bg-secondary text-white text-xs px-2 py-0.5 rounded ms-2">{{ selectedDateClases.length }}</span>
+      </h6>
+      <button class="p-2 text-outline hover:text-on-surface transition-colors" (click)="selectedDate = null">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="p-4">
+      <div *ngIf="selectedDateClases.length === 0" class="text-center py-6 text-outline">
+        <i class="bi bi-calendar-x text-2xl mb-2 block"></i>
+        <p>No hay clases en este dia</p>
+      </div>
+      <div *ngIf="selectedDateClases.length > 0" class="divide-y divide-outline-variant">
+        <div *ngFor="let c of selectedDateClases"
+             class="flex justify-between items-center py-3 cursor-pointer transition-colors"
+             [class.bg-surface-container-low]="selectedClase?.idClase === c.idClase || selectedClase?.id === c.id"
+             (click)="selectClase(c)">
+          <div>
+            <div class="font-semibold text-on-surface">{{ c.nombre }}</div>
+            <small class="text-outline">{{ getHorario(c) }}</small>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-1 rounded-full text-xs font-medium"
+                  [class.bg-success]="c.estado === 'ACTIVO' || c.estado === 'activo'"
+                  [class.text-white]="c.estado === 'ACTIVO' || c.estado === 'activo'"
+                  [class.bg-surface-variant]="c.estado !== 'ACTIVO' && c.estado !== 'activo'"
+                  [class.text-on-surface-variant]="c.estado !== 'ACTIVO' && c.estado !== 'activo'">
+              {{ c.estado }}
+            </span>
+            <button class="px-3 py-1 border border-error text-error rounded text-xs font-semibold hover:bg-error hover:text-white transition-colors"
+                    (click)="deleteClase(c.idClase || c.id); $event.stopPropagation()"
+                    [disabled]="deletingIds.has((c.idClase || c.id) + '')">
+              {{ deletingIds.has((c.idClase || c.id) + '') ? '...' : 'Eliminar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detalle de clase seleccionada -->
+  <div *ngIf="selectedClase" class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6 mb-6">
+    <div class="flex justify-between items-start">
+      <div>
+        <h5 class="text-h3 font-h3 mb-2">{{ selectedClase.nombre }}</h5>
+        <p class="mb-1 text-sm text-on-surface-variant">
+          <i class="bi bi-calendar3 me-1 text-secondary"></i><strong>Fecha:</strong> {{ selectedClase.fechaClase || '—' }}
+        </p>
+        <p class="mb-1 text-sm text-on-surface-variant">
+          <i class="bi bi-clock me-1 text-secondary"></i><strong>Horario:</strong> {{ getHorario(selectedClase) }}
+        </p>
+        <p class="mb-0 text-sm text-on-surface-variant">
+          <i class="bi bi-person me-1 text-secondary"></i><strong>Trainer:</strong> {{ selectedClase.idTrainer || '—' }}
+        </p>
+
+      </div>
+      <div class="flex flex-col items-end gap-2">
+        <span class="px-2.5 py-1 rounded-full text-xs font-medium"
+              [class.bg-success]="selectedClase.estado === 'ACTIVO' || selectedClase.estado === 'activo'"
+              [class.text-white]="selectedClase.estado === 'ACTIVO' || selectedClase.estado === 'activo'"
+              [class.bg-surface-variant]="selectedClase.estado !== 'ACTIVO' && selectedClase.estado !== 'activo'"
+              [class.text-on-surface-variant]="selectedClase.estado !== 'ACTIVO' && selectedClase.estado !== 'activo'">
+          {{ selectedClase.estado }}
+        </span>
+        <button class="p-2 text-outline hover:text-on-surface transition-colors" (click)="selectedClase = null">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de todas las clases -->
+  <div class="mb-6" id="clases">
+    <h5 class="text-h3 font-h3 mb-4">
+      <i class="bi bi-list-ul me-2 text-secondary"></i>Todas las clases
+      <span class="inline-block bg-secondary text-white text-xs px-2 py-0.5 rounded ms-1">{{ clases.length }}</span>
+    </h5>
+
+    <div *ngIf="loading" class="text-center py-8">
+      <div class="inline-block w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin" role="status"></div>
+      <p class="mt-2 text-outline">Cargando clases...</p>
+    </div>
+
+    <div *ngIf="!loading && clases.length === 0" class="text-center py-8 text-outline">
+      <i class="bi bi-calendar-x text-4xl mb-2 block"></i>
+      <p>No hay clases registradas.</p>
+    </div>
+
+    <div *ngIf="!loading && clases.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let c of clases" class="bg-surface-container-lowest rounded-xl shadow border overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+           [class.border-success]="c.estado === 'activo' || c.estado === 'ACTIVO'"
+           [class.border-outline-variant]="c.estado !== 'activo' && c.estado !== 'ACTIVO'">
+        <div class="p-5 flex flex-col flex-1">
+          <div class="flex justify-between items-start mb-2">
+            <h6 class="font-semibold text-on-surface">{{ c.nombre }}</h6>
+            <span class="px-2 py-1 rounded-full text-xs font-medium"
+                  [class.bg-success]="c.estado === 'ACTIVO' || c.estado === 'activo'"
+                  [class.text-white]="c.estado === 'ACTIVO' || c.estado === 'activo'"
+                  [class.bg-surface-variant]="c.estado !== 'ACTIVO' && c.estado !== 'activo'"
+                  [class.text-on-surface-variant]="c.estado !== 'ACTIVO' && c.estado !== 'activo'">
+              {{ c.estado }}
+            </span>
+          </div>
+
+          <div class="mt-auto space-y-2 text-sm text-on-surface-variant">
+            <div class="flex items-center gap-2">
+              <i class="bi bi-calendar3 text-secondary"></i>
+              <span>{{ c.fechaClase || '—' }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="bi bi-clock text-secondary"></i>
+              <span>{{ getHorario(c) }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="bi bi-person text-secondary"></i>
+              <span>Trainer: {{ c.idTrainer || '—' }}</span>
+            </div>
+            <div class="flex gap-2 pt-3">
+              <button class="flex-1 py-2 px-3 border border-secondary text-secondary rounded-lg text-sm font-semibold hover:bg-secondary hover:text-white transition-colors"
+                      (click)="verInscritos(c)">
+                <i class="bi bi-people me-1"></i>Ver inscritos
+              </button>
+              <button class="py-2 px-3 border border-error text-error rounded-lg text-sm font-semibold hover:bg-error hover:text-white transition-colors"
+                      (click)="deleteClase(c.idClase || c.id)"
+                      [disabled]="deletingIds.has((c.idClase || c.id) + '')">
+                <i class="bi bi-trash me-1"></i>{{ deletingIds.has((c.idClase || c.id) + '') ? '...' : 'Eliminar' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Boton admin -->
+  <div *ngIf="esAdmin" class="mb-6">
+    <button class="px-6 py-3 border border-outline-variant rounded-lg text-on-surface font-semibold hover:bg-surface-container transition-colors"
+            (click)="onAction('Calculo de ventas')">
+      <i class="bi bi-calculator me-1"></i> Calculo de ventas
+    </button>
+  </div>
+</div>
+
+<!-- MODAL CREAR CLASE -->
+<div *ngIf="showCreateModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+     (click)="closeCreateModal()">
+  <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+       (click)="$event.stopPropagation()">
+    <div class="bg-gradient-to-r from-primary-container to-secondary p-6 text-white relative">
+      <div class="flex items-center gap-3">
+        <i class="bi bi-calendar-plus-fill text-2xl"></i>
+        <div>
+          <h5 class="text-h3 font-h3">Crear Nueva Clase</h5>
+          <p class="text-sm opacity-90">Completa los datos para agregar una clase al calendario</p>
+        </div>
+      </div>
+      <button type="button" class="absolute top-4 right-4 text-white/80 hover:text-white transition-colors" (click)="closeCreateModal()" aria-label="Cerrar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <form class="p-6 space-y-4" #claseForm="ngForm">
+      <div>
+        <label for="nombreClase" class="block font-semibold text-on-surface mb-1"><i class="bi bi-tag me-1 text-secondary"></i>Nombre</label>
+        <div class="relative">
+          <i class="bi bi-type-bold absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+          <input id="nombreClase" [(ngModel)]="newClase.nombre" name="nombre" [disabled]="loading" placeholder="Nombre de la clase" required
+                 class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+        </div>
+      </div>
+      <div>
+        <label for="cupoClase" class="block font-semibold text-on-surface mb-1"><i class="bi bi-people me-1 text-secondary"></i>Cupo maximo</label>
+        <div class="relative">
+          <i class="bi bi-people absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+          <input id="cupoClase" type="number" [(ngModel)]="newClase.cupo" name="cupo" [disabled]="loading" min="10" max="30"
+                 class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+        </div>
+      </div>
+      <div>
+        <label for="fechaClase" class="block font-semibold text-on-surface mb-1"><i class="bi bi-calendar3 me-1 text-secondary"></i>Fecha</label>
+        <div class="relative">
+          <i class="bi bi-calendar-event absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+          <input id="fechaClase" type="date" [(ngModel)]="newClase.fechaClase" name="fechaClase" [disabled]="loading" required
+                 class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="horarioInicio" class="block font-semibold text-on-surface mb-1"><i class="bi bi-clock me-1 text-secondary"></i>Hora inicio</label>
+          <div class="relative">
+            <i class="bi bi-play-circle absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+            <input id="horarioInicio" type="time" [(ngModel)]="newClase.horai" name="horai" [disabled]="loading"
+                   class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+          </div>
+        </div>
+        <div>
+          <label for="horarioFin" class="block font-semibold text-on-surface mb-1"><i class="bi bi-clock-fill me-1 text-secondary"></i>Hora fin</label>
+          <div class="relative">
+            <i class="bi bi-stop-circle absolute left-3 top-1/2 -translate-y-1/2 text-outline"></i>
+            <input id="horarioFin" type="time" [(ngModel)]="newClase.horaf" name="horaf" [disabled]="loading"
+                   class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-colors">
+          </div>
+        </div>
+      </div>
+      <input type="hidden" [(ngModel)]="newClase.estado" value="activo">
+
+      <div *ngIf="createError" class="bg-error-container text-on-error-container rounded-lg px-4 py-3 mt-2">
+        <i class="bi bi-exclamation-circle-fill me-2"></i> {{ createError }}
+      </div>
+    </form>
+    <div class="flex justify-end gap-3 p-6 border-t border-outline-variant">
+      <button class="px-6 py-2 border border-outline-variant rounded-lg text-on-surface font-semibold hover:bg-surface-container transition-colors"
+              (click)="closeCreateModal()" [disabled]="loading">
+        <i class="bi bi-x-lg me-1"></i>Cancelar
+      </button>
+      <button class="px-6 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+              (click)="createClase()" [disabled]="loading">
+        <span *ngIf="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin me-1"></span>
+        <i *ngIf="!loading" class="bi bi-check-circle me-1"></i>
+        {{ loading ? 'Creando...' : 'Crear Clase' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INSCRITOS -->
+<div *ngIf="showInscritos" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+     (click)="closeInscritos()">
+  <div class="bg-surface-container-lowest rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col"
+       (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-primary-container to-secondary p-5 text-white relative rounded-t-xl flex-shrink-0">
+      <button type="button" class="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
+              (click)="closeInscritos()" aria-label="Cerrar">
+        <i class="bi bi-x-lg text-lg"></i>
+      </button>
+      <div class="flex items-center gap-3">
+        <i class="bi bi-people-fill text-2xl"></i>
+        <div>
+          <h5 class="text-h3 font-h3 leading-tight">{{ claseInscritos?.nombre }}</h5>
+          <p class="text-sm opacity-90 mt-0.5">
+            <i class="bi bi-calendar3 me-1"></i>{{ claseInscritos?.fechaClase }}
+            &nbsp;&bull;&nbsp;
+            <i class="bi bi-clock me-1"></i>{{ getHorario(claseInscritos) }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="flex-1 overflow-y-auto p-5">
+
+      <!-- Loading -->
+      <div *ngIf="loadingInscritos" class="flex justify-center py-10">
+        <div class="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+
+      <!-- Vacío -->
+      <div *ngIf="!loadingInscritos && inscritos.length === 0"
+           class="text-center py-10 text-on-surface-variant">
+        <i class="bi bi-person-slash text-4xl block mb-2 opacity-40"></i>
+        <p class="text-sm">Sin inscritos aún</p>
+      </div>
+
+      <!-- Lista -->
+      <ul *ngIf="!loadingInscritos && inscritos.length > 0" class="divide-y divide-outline-variant">
+        <li *ngFor="let ins of inscritos; let i = index"
+            class="py-3 flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center flex-shrink-0">
+            <span class="text-xs font-bold text-secondary">{{ i + 1 }}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-on-surface truncate">{{ ins.nombreUsuario }}</p>
+            <p class="text-xs text-on-surface-variant">
+              Inscrito: {{ ins.fechaInscripcion | date:'dd/MM/yyyy HH:mm' }}
+            </p>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0"
+                [class.bg-success]="ins.estado === 'ACTIVA'"
+                [class.text-white]="ins.estado === 'ACTIVA'"
+                [class.bg-surface-variant]="ins.estado !== 'ACTIVA'"
+                [class.text-on-surface-variant]="ins.estado !== 'ACTIVA'">
+            {{ ins.estado }}
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="border-t border-outline-variant px-5 py-3 flex items-center justify-between flex-shrink-0">
+      <span class="text-sm text-on-surface-variant">
+        <i class="bi bi-person-check me-1 text-secondary"></i>
+        <strong>{{ inscritos.length }}</strong> inscritos
+        <span *ngIf="claseInscritos?.cupo"> / {{ claseInscritos.cupo }} cupos</span>
+      </span>
+      <button class="px-4 py-2 border border-outline-variant rounded-lg text-sm font-semibold hover:bg-surface-container transition-colors"
+              (click)="closeInscritos()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

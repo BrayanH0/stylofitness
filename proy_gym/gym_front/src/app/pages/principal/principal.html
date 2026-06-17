@@ -1,0 +1,157 @@
+<app-navbar></app-navbar>
+
+<!-- Hero Section -->
+<section class="relative min-h-[700px] flex items-center overflow-hidden">
+  <div class="absolute inset-0 z-0">
+    <div class="absolute inset-0 bg-gradient-to-r from-primary-container/90 to-primary-container/40 z-10"></div>
+    <img alt="Gym Hero" class="w-full h-full object-cover" src="/hero-gym.jpg"/>
+  </div>
+  <div class="relative z-20 w-full max-w-[1320px] mx-auto px-6 py-20">
+    <div class="max-w-2xl">
+      <h1 class="text-5xl md:text-hero-title font-hero-title text-white mb-6 leading-tight">
+        Transforma tu vida con <span class="text-warning">Stylossfitness</span>
+      </h1>
+      <p class="text-lg text-white/85 mb-8 max-w-lg">
+        Unete a la comunidad fitness mas grande. Planes de entrenamiento personalizados,
+        clases grupales y asesoria profesional para alcanzar tus metas.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <button (click)="openLogin()"
+                class="bg-gradient-to-r from-warning to-warning text-white px-8 py-4 rounded font-bold uppercase text-sm tracking-wide flex items-center gap-2 transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
+          <i class="bi bi-rocket-takeoff"></i> Comienza Ahora
+        </button>
+        <a routerLink="/ubicacion"
+           class="border-2 border-white text-white px-8 py-4 rounded font-bold uppercase text-sm tracking-wide flex items-center gap-2 hover:bg-white hover:text-primary-container transition-colors duration-200">
+          <i class="bi bi-geo-alt"></i> Visitanos
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Experience Section -->
+<section class="py-20 bg-white">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-section-title font-section-title text-on-surface mb-2">Vive la experiencia</h2>
+      <p class="text-body-lg text-on-surface-variant">Todo lo que necesitas para tu entrenamiento</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+        <div class="h-48 overflow-hidden">
+          <img src="/equipos.jpg" alt="Equipos modernos" class="w-full h-full object-cover transition-transform duration-400 hover:scale-105"/>
+        </div>
+        <div class="p-6">
+          <h3 class="text-headline-md font-headline-md text-on-surface mb-2">Equipos Modernos</h3>
+          <p class="text-body-md text-on-surface-variant">Maquinas de ultima generacion</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+        <div class="h-48 overflow-hidden">
+          <img src="/clases.jpg" alt="Clases grupales" class="w-full h-full object-cover transition-transform duration-400 hover:scale-105"/>
+        </div>
+        <div class="p-6">
+          <h3 class="text-headline-md font-headline-md text-on-surface mb-2">Clases Grupales</h3>
+          <p class="text-body-md text-on-surface-variant">Mas de 50 clases semanales</p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+        <div class="h-48 overflow-hidden">
+          <img src="/entrenamiento.jpg" alt="Zona de entrenamiento" class="w-full h-full object-cover transition-transform duration-400 hover:scale-105"/>
+        </div>
+        <div class="p-6">
+          <h3 class="text-headline-md font-headline-md text-on-surface mb-2">Zona de Entrenamiento</h3>
+          <p class="text-body-md text-on-surface-variant">Pesas libres y funcionales</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Plans Section -->
+<section class="py-20 bg-surface-container-low">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-section-title font-section-title text-on-surface mb-2">Elige Tu Plan</h2>
+      <p class="text-body-lg text-on-surface-variant">Planes flexibles que se adaptan a tu estilo de vida</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div *ngFor="let plan of planes"
+           class="bg-surface-container-lowest rounded-xl p-8 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg border flex flex-col"
+           [class.border-warning]="plan.destacado"
+           [class.border-surface-variant]="!plan.destacado">
+        <div *ngIf="plan.destacado" class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-warning text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">MAS POPULAR</div>
+        <div class="text-center mb-6 mt-2">
+          <h3 class="text-headline-md font-headline-md text-on-surface mb-4">{{ plan.nombre }}</h3>
+          <div class="text-5xl font-black mb-1" [class.text-secondary]="!plan.destacado" [class.text-warning]="plan.destacado">
+            {{ plan.precio.promocional }}
+          </div>
+          <p class="text-body-md text-on-surface-variant mb-3">{{ plan.precio.periodo }}</p>
+          <p class="text-sm text-on-surface-variant line-through">{{ plan.precio.regular }}</p>
+          <p class="text-sm text-on-surface-variant">{{ plan.precio.fidelidad }}</p>
+        </div>
+        <div class="flex-grow"></div>
+        <button (click)="elegirPlan(plan.key)"
+                class="w-full py-3 rounded font-bold uppercase text-sm tracking-wide transition-colors duration-200"
+                [class.bg-gradient-to-r]="plan.destacado"
+                [class.from-warning]="plan.destacado"
+                [class.to-warning]="plan.destacado"
+                [class.text-white]="plan.destacado"
+                [class.border-2]="!plan.destacado"
+                [class.border-secondary]="!plan.destacado"
+                [class.text-secondary]="!plan.destacado"
+                [class.hover:bg-secondary]="!plan.destacado"
+                [class.hover:text-white]="!plan.destacado">
+          Elegir {{ plan.nombre }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-20 bg-white">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-section-title font-section-title text-on-surface mb-2">Todo Lo Que Incluye</h2>
+      <p class="text-body-lg text-on-surface-variant">Beneficios completos para tu entrenamiento</p>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse" aria-label="Comparacion de beneficios por plan">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="p-4 rounded-tl-lg">Beneficios</th>
+            <th class="p-4 text-center" *ngFor="let plan of planes">{{ plan.nombre }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let beneficio of beneficios" [class.bg-surface-container-low]="beneficio.esTitulo" class="border-b border-outline-variant/30">
+            <td class="p-4" [class.font-bold]="beneficio.esTitulo" [class.pt-6]="beneficio.esTitulo">
+              {{ beneficio.nombre }}
+            </td>
+            <td class="p-4 text-center" [class.pt-6]="beneficio.esTitulo">
+              <span *ngIf="beneficio.planBlack" class="text-success"><i class="bi bi-check-circle-fill"></i></span>
+              <span *ngIf="!beneficio.planBlack" class="text-muted">—</span>
+            </td>
+            <td class="p-4 text-center" [class.pt-6]="beneficio.esTitulo">
+              <span *ngIf="beneficio.planFit" class="text-success"><i class="bi bi-check-circle-fill"></i></span>
+              <span *ngIf="!beneficio.planFit" class="text-muted">—</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-center mt-4 text-muted text-sm italic">*Valores promocionales</p>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 bg-gradient-to-br from-primary to-on-tertiary-fixed-variant text-center">
+  <div class="max-w-[1320px] mx-auto px-6">
+    <h2 class="text-hero-title font-hero-title text-white mb-4">Oferta por tiempo limitado!</h2>
+    <p class="text-headline-md text-white/85 mb-8">Aprovecha los precios promocionales antes de que terminen.</p>
+    <a routerLink="/registrar" class="inline-block bg-gradient-to-r from-warning to-warning text-white px-10 py-5 rounded font-bold uppercase text-lg tracking-wide transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
+      <i class="bi bi-rocket-takeoff me-2"></i> Comienza Ahora
+    </a>
+  </div>
+</section>
