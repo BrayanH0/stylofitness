@@ -107,7 +107,6 @@ public class InscripcionClaseService {
             throw new BadRequestException("Ya estás inscrito en esta clase");
         }
 
-        // Validar que el usuario no tenga otra clase inscrita en el mismo horario
         if (clase.getFechaClase() != null && clase.getHorai() != null && clase.getHoraf() != null) {
             List<InscripcionClase> inscripcionesActivas = inscripcionRepository.findByDniUsuarioAndEstado(dniUsuario, "ACTIVA");
             for (InscripcionClase insc : inscripcionesActivas) {

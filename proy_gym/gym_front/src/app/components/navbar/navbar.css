@@ -1,4 +1,3 @@
-/* Navbar link hover underline effect */
 .nav-link-tw {
   position: relative;
   color: var(--pg-primary);
@@ -33,7 +32,6 @@
   color: var(--pg-secondary);
 }
 
-/* Mobile nav link */
 .nav-link-tw-mobile {
   display: block;
   color: var(--pg-primary);

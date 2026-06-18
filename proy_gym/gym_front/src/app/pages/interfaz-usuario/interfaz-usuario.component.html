@@ -1,13 +1,10 @@
 <app-navbar></app-navbar>
 
-<!-- Main Content -->
 <main>
 
-<!-- Portal Header -->
 <header class="bg-gradient-to-r from-primary-container to-primary text-on-primary shadow relative overflow-hidden">
   <div class="max-w-[1320px] mx-auto px-6 py-8">
     <div class="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6">
-      <!-- Avatar -->
       <div class="w-20 h-20 rounded-full bg-secondary text-white flex items-center justify-center text-2xl font-bold shadow-lg">
         {{ (usuario?.nombre || '?')[0] }}{{ (usuario?.apellido || '?')[0] }}
       </div>
@@ -28,7 +25,6 @@
 </header>
 
 <div class="max-w-[1320px] mx-auto px-6 py-6" id="main-content">
-  <!-- Stats Grid -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="dashboard">
     <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
       <div class="flex justify-between items-start mb-3">
@@ -68,7 +64,6 @@
     </div>
   </div>
 
-  <!-- Mensajes -->
   <div *ngIf="mensajeExito" class="bg-success/10 border border-success text-success rounded-lg p-4 mb-6 flex items-center gap-2" role="alert">
     <i class="bi bi-check-circle-fill"></i> {{ mensajeExito }}
   </div>
@@ -79,13 +74,10 @@
     <i class="bi bi-lock-fill"></i> {{ mensajeUpgrade }}
   </div>
 
-  <!-- Main Content Grid -->
   <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
 
-    <!-- Main Column -->
     <div class="xl:col-span-2 space-y-8">
 
-      <!-- Clases Disponibles -->
       <div class="bg-surface-container-lowest rounded-xl shadow border border-surface-container-high p-6" id="clases">
         <div class="flex justify-between items-center border-b border-surface-container-high pb-4 mb-6">
           <h2 class="text-headline-md font-headline-md text-primary-container">
@@ -162,7 +154,6 @@
         </div>
       </div>
 
-      <!-- Rutina Generada -->
       <div *ngIf="rutinaGenerada.length > 0 && esPlanBlack" class="space-y-4" id="rutina">
         <div class="flex justify-between items-center">
           <h2 class="text-headline-md font-headline-md text-primary-container">
@@ -211,10 +202,8 @@
 
     </div>
 
-    <!-- Sidebar -->
     <div class="space-y-6">
 
-      <!-- Quick Actions -->
       <div class="bg-surface-container-lowest rounded-xl shadow border border-surface-container-high p-6">
         <h2 class="text-headline-md font-headline-md text-primary-container mb-4 border-b border-surface-container-high pb-4">Acciones Rapidas</h2>
         <div class="space-y-3">
@@ -268,7 +257,6 @@
   </div>
 </div>
 
-<!-- Edit Modal -->
 <div *ngIf="showEditModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
      (click)="closeEditModal()">
   <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
@@ -315,7 +303,6 @@
   </div>
 </div>
 
-<!-- Rutina Modal -->
 <div *ngIf="showRutinaModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
      (click)="closeRutinaModal()">
   <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
@@ -416,3 +403,4 @@
     </div>
   </div>
 </div>
+</main>

@@ -1,7 +1,3 @@
-/**
- * Traps Tab/Shift+Tab focus within a container element.
- * Call this from a (keydown) handler on the modal container.
- */
 export function trapFocus(event: KeyboardEvent, container: HTMLElement): void {
   if (event.key === 'Escape') {
     return;

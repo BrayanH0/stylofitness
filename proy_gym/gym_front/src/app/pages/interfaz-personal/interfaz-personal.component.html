@@ -1,9 +1,7 @@
 <app-navbar></app-navbar>
 
-<!-- Main Content -->
 <main>
 
-<!-- PERFIL HEADER -->
 <header class="bg-gradient-to-r from-primary-container to-surface-tint text-on-primary shadow">
   <div class="max-w-[1320px] mx-auto px-6 py-6">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -33,7 +31,6 @@
 
 <div class="max-w-[1320px] mx-auto px-6 py-6">
 
-  <!-- STATS -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="dashboard">
     <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200">
       <div class="flex justify-between items-start mb-3">
@@ -74,7 +71,6 @@
   </div>
 
   <div id="calendario">
-  <!-- Navegacion del calendario -->
   <div class="flex justify-between items-center mb-4">
     <div class="flex items-center gap-2">
       <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container transition-colors"
@@ -92,15 +88,12 @@
     <span class="text-sm text-outline">{{ clases.length }} clases en total</span>
   </div>
 
-  <!-- Calendario Grid -->
   <div class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant overflow-hidden mb-6">
     <div class="p-6">
-      <!-- Encabezados de dias -->
       <div class="grid grid-cols-7 gap-1 mb-2">
         <div *ngFor="let dia of diasSemana" class="text-center text-label-bold text-on-surface-variant py-2">{{ dia }}</div>
       </div>
 
-      <!-- Celdas del calendario -->
       <div *ngIf="!loading" class="grid grid-cols-7 gap-2">
         <div *ngFor="let day of calendarDays"
              class="min-h-[80px] p-2 rounded-lg border transition-colors cursor-pointer relative"
@@ -130,7 +123,6 @@
         </div>
       </div>
 
-      <!-- Loading -->
       <div *ngIf="loading" class="text-center py-8">
         <div class="inline-block w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin" role="status"></div>
         <p class="mt-2 text-outline">Cargando clases...</p>
@@ -140,7 +132,6 @@
 
   </div>
 
-  <!-- Panel de detalle del dia seleccionado -->
   <div *ngIf="selectedDate" class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant overflow-hidden mb-6">
     <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-low">
       <h6 class="font-semibold text-on-surface">
@@ -185,7 +176,6 @@
     </div>
   </div>
 
-  <!-- Detalle de clase seleccionada -->
   <div *ngIf="selectedClase" class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6 mb-6">
     <div class="flex justify-between items-start">
       <div>
@@ -216,7 +206,6 @@
     </div>
   </div>
 
-  <!-- Tabla de todas las clases -->
   <div class="mb-6" id="clases">
     <h5 class="text-h3 font-h3 mb-4">
       <i class="bi bi-list-ul me-2 text-secondary"></i>Todas las clases
@@ -279,7 +268,6 @@
     </div>
   </div>
 
-  <!-- Boton admin -->
   <div *ngIf="esAdmin" class="mb-6">
     <button class="px-6 py-3 border border-outline-variant rounded-lg text-on-surface font-semibold hover:bg-surface-container transition-colors"
             (click)="onAction('Calculo de ventas')">
@@ -288,7 +276,6 @@
   </div>
 </div>
 
-<!-- MODAL CREAR CLASE -->
 <div *ngIf="showCreateModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
      (click)="closeCreateModal()">
   <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
@@ -369,13 +356,11 @@
   </div>
 </div>
 
-<!-- MODAL INSCRITOS -->
 <div *ngIf="showInscritos" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
      (click)="closeInscritos()">
   <div class="bg-surface-container-lowest rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col"
        (click)="$event.stopPropagation()">
 
-    <!-- Header -->
     <div class="bg-gradient-to-r from-primary-container to-secondary p-5 text-white relative rounded-t-xl flex-shrink-0">
       <button type="button" class="absolute top-4 right-4 text-white/80 hover:text-white transition-colors"
               (click)="closeInscritos()" aria-label="Cerrar">
@@ -394,22 +379,18 @@
       </div>
     </div>
 
-    <!-- Body -->
     <div class="flex-1 overflow-y-auto p-5">
 
-      <!-- Loading -->
       <div *ngIf="loadingInscritos" class="flex justify-center py-10">
         <div class="w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
       </div>
 
-      <!-- Vacío -->
       <div *ngIf="!loadingInscritos && inscritos.length === 0"
            class="text-center py-10 text-on-surface-variant">
         <i class="bi bi-person-slash text-4xl block mb-2 opacity-40"></i>
         <p class="text-sm">Sin inscritos aún</p>
       </div>
 
-      <!-- Lista -->
       <ul *ngIf="!loadingInscritos && inscritos.length > 0" class="divide-y divide-outline-variant">
         <li *ngFor="let ins of inscritos; let i = index"
             class="py-3 flex items-center gap-3">
@@ -433,7 +414,6 @@
       </ul>
     </div>
 
-    <!-- Footer -->
     <div class="border-t border-outline-variant px-5 py-3 flex items-center justify-between flex-shrink-0">
       <span class="text-sm text-on-surface-variant">
         <i class="bi bi-person-check me-1 text-secondary"></i>
@@ -447,3 +427,5 @@
     </div>
   </div>
 </div>
+
+</main>

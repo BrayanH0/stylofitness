@@ -152,7 +152,6 @@ export class Registrar implements OnInit {
     try {
       const dniRes = await firstValueFrom(this.authService.existeDni(this.usuario.dni!));
       if (dniRes.existe) {
-        // Intentar retomar pago si el usuario quedó INACTIVO por pago abandonado
         try {
           const retomarRes = await firstValueFrom(this.authService.retomarPago(this.usuario));
           localStorage.setItem('datosCliente', JSON.stringify({ dni: this.usuario.dni, tempToken: retomarRes.tempToken }));

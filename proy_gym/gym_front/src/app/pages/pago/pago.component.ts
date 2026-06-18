@@ -110,7 +110,6 @@ export class PagoComponent implements OnInit {
       return;
     }
 
-    // retomar-pago path: tempToken ya obtenido desde /registrar, saltar pre-registro
     if (datosCliente.tempToken) {
       this.cuentaCreada = true;
       this.redirigirStripe(dni);
@@ -130,7 +129,6 @@ export class PagoComponent implements OnInit {
       error: (err) => {
         const errorMsg = err?.error?.error || err?.message || 'Error al crear la cuenta';
         if (errorMsg.includes('DNI ya') || errorMsg.includes('ya está registrado')) {
-          // DNI existe como INACTIVO (pago abandonado previo): obtener nuevo tempToken
           this.http.post<any>(API_ENDPOINTS.USUARIO_RETOMAR_PAGO, { dni }).subscribe({
             next: (response) => {
               const datosActualizados = { ...datosSinPassword, tempToken: response.tempToken };

@@ -197,7 +197,6 @@ public class UsuarioController {
                         .body(Map.of("error", "El usuario ya está activo. Inicia sesión."));
             }
 
-            // Validar unicidad solo si el campo cambió respecto al existente
             if (datosNuevos.getEmail() != null && !datosNuevos.getEmail().equals(usuario.getEmail())) {
                 if (usuarioServices.existeEmail(datosNuevos.getEmail())) {
                     return ResponseEntity.badRequest().body(Map.of("error", "El email ya está registrado."));
@@ -216,7 +215,6 @@ public class UsuarioController {
             if (datosNuevos.getDireccion() != null) usuario.setDireccion(datosNuevos.getDireccion());
             if (datosNuevos.getFecha_nacimiento() != null) usuario.setFecha_nacimiento(datosNuevos.getFecha_nacimiento());
 
-            // Re-hashear contraseña solo si se envió una nueva (llega como plaintext en passwordHash)
             if (datosNuevos.getPasswordHash() != null && !datosNuevos.getPasswordHash().isEmpty()) {
                 usuario.setPasswordHash(passwordEncoder.encode(datosNuevos.getPasswordHash()));
             }

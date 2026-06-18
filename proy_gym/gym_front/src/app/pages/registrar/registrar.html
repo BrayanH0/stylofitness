@@ -1,7 +1,6 @@
 <app-navbar></app-navbar>
 
 <div class="min-h-screen bg-surface-container-low pb-20" id="main-content">
-  <!-- Header -->
   <header class="bg-gradient-to-r from-primary-container to-secondary pt-16 pb-32 px-6 text-center text-on-primary">
     <div class="max-w-[1320px] mx-auto flex flex-col items-center">
       <i class="bi bi-person-plus-fill text-6xl mb-4"></i>
@@ -13,32 +12,24 @@
   </header>
 
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-10">
-    <!-- Step indicator -->
     <div class="bg-surface-container-lowest rounded-xl shadow p-6 mb-8" role="group" aria-label="Pasos del registro">
       <div class="grid grid-cols-3">
-        <!-- Step 1 -->
         <div class="flex flex-col items-center relative">
           <div class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center font-bold shadow-md z-10">1</div>
           <span class="text-label-bold text-secondary hidden sm:block mt-2">Datos Personales</span>
-          <!-- Line to next step -->
           <div class="absolute top-5 left-1/2 w-full h-1 bg-secondary z-0"></div>
         </div>
 
-        <!-- Step 2 -->
         <div class="flex flex-col items-center relative">
           <div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-bold border-2 border-surface-variant z-10">2</div>
           <span class="text-label-bold text-on-surface-variant hidden sm:block mt-2">Suscripcion</span>
-          <!-- Left line (completed) -->
           <div class="absolute top-5 right-1/2 w-full h-1 bg-secondary z-0"></div>
-          <!-- Right line (pending) -->
           <div class="absolute top-5 left-1/2 w-full h-1 bg-surface-variant z-0"></div>
         </div>
 
-        <!-- Step 3 -->
         <div class="flex flex-col items-center relative">
           <div class="w-10 h-10 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-bold border-2 border-surface-variant z-10">3</div>
           <span class="text-label-bold text-on-surface-variant hidden sm:block mt-2">Resumen</span>
-          <!-- Left line -->
           <div class="absolute top-5 right-1/2 w-full h-1 bg-surface-variant z-0"></div>
         </div>
       </div>
@@ -48,7 +39,6 @@
       <i class="bi bi-check-circle-fill me-2"></i>Usuario registrado exitosamente!
     </div>
 
-    <!-- Registration date -->
     <div class="text-center mb-6">
       <span class="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-3 py-2 rounded-lg text-sm font-semibold">
         <i class="bi bi-calendar-check"></i> Fecha de Registro: {{ usuario.fecha_registro }}
@@ -58,7 +48,6 @@
     <form #registerForm="ngForm" id="registrationForm" (ngSubmit)="onSubmit(registerForm)" (reset)="onReset(registerForm)" novalidate
           class="flex flex-col gap-8"
           [class.was-validated]="registerForm.submitted && !registerForm.valid">
-      <!-- Personal Info -->
       <div class="bg-surface-container-lowest rounded-xl shadow p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <h2 class="text-headline-md font-headline-md text-primary mb-6 flex items-center gap-2 border-b border-surface-variant pb-4">
           <i class="bi bi-person-circle text-secondary"></i> Informacion Personal
@@ -186,13 +175,11 @@
         </div>
       </div>
 
-      <!-- Membership -->
       <div class="bg-surface-container-lowest rounded-xl shadow p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <h2 class="text-headline-md font-headline-md text-primary mb-6 flex items-center gap-2 border-b border-surface-variant pb-4">
           <i class="bi bi-credit-card text-secondary"></i> Tipo de Suscripcion <span class="text-error">*</span>
         </h2>
 
-        <!-- Plan selector -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <button type="button"
                   class="relative block w-full text-left border-2 rounded-xl p-6 transition-all duration-300"
@@ -232,7 +219,6 @@
           </button>
         </div>
 
-        <!-- Duration selector -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="membershipOptions">
           <button type="button"
                   class="block w-full text-left border rounded-xl p-5 transition-all duration-200"
@@ -275,7 +261,6 @@
         </div>
       </div>
 
-      <!-- Date Summary -->
       <div class="bg-surface-container-lowest rounded-xl shadow p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
         <h2 class="text-headline-md font-headline-md text-primary mb-6 flex items-center gap-2 border-b border-surface-variant pb-4">
           <i class="bi bi-calendar-range text-secondary"></i> Resumen
@@ -299,7 +284,6 @@
         </div>
       </div>
 
-      <!-- Actions -->
       <div class="flex justify-between pt-2">
         <button type="reset"
                 class="px-6 py-3 border-2 border-outline-variant rounded-lg text-on-surface font-semibold hover:bg-surface-container transition-colors flex items-center gap-2">

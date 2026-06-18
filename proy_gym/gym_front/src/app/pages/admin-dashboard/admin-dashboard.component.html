@@ -1,9 +1,7 @@
 <app-navbar></app-navbar>
 
-<!-- Main Content -->
 <main>
 
-<!-- HEADER -->
 <header class="bg-gradient-to-r from-primary-container to-secondary text-on-primary shadow">
   <div class="max-w-[1320px] mx-auto px-6 py-6">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -22,7 +20,6 @@
 
 <div class="max-w-[1320px] mx-auto px-6 py-6">
 
-  <!-- Mensajes -->
   <div *ngIf="mensajeExito" class="bg-success/10 border border-success text-success rounded-lg p-4 mb-6 flex items-center gap-2 justify-between" role="alert">
     <div class="flex items-center gap-2">
       <i class="bi bi-check-circle"></i> {{ mensajeExito }}
@@ -40,7 +37,6 @@
     </button>
   </div>
 
-  <!-- Stat Cards -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
     <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
       <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
@@ -80,7 +76,6 @@
     </div>
   </div>
 
-  <!-- Tab indicator for mobile (hidden on md+) -->
   <div class="flex border-b border-outline-variant mb-6 overflow-x-auto">
     <button class="px-6 py-3 text-sm uppercase tracking-wider font-bold border-b-4 transition-colors whitespace-nowrap"
             [class.border-primary]="activeTab === 'usuarios'"
@@ -108,18 +103,15 @@
             (click)="setTab('estadisticas')">Estadisticas</button>
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="text-center py-8">
     <div class="inline-block w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin" role="status"></div>
     <p class="mt-2 text-outline">Cargando datos...</p>
   </div>
 
-  <!-- Error -->
   <div *ngIf="error" class="bg-error/10 border border-error text-error rounded-lg p-4 mb-6">
     <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
   </div>
 
-  <!-- Tab: Clientes -->
   <div *ngIf="activeTab === 'usuarios' && !loading">
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
       <h5 class="text-h3 font-h3">
@@ -199,7 +191,6 @@
     </div>
   </div>
 
-  <!-- Tab: Personal -->
   <div *ngIf="activeTab === 'personal' && !loading">
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
       <h5 class="text-h3 font-h3">
@@ -271,9 +262,7 @@
     </div>
   </div>
 
-  <!-- Tab: Suscripciones/Pagos -->
   <div *ngIf="activeTab === 'suscripciones'">
-    <!-- Resumen -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 max-w-2xl mx-auto">
       <div class="bg-surface-container-lowest rounded-xl shadow p-6 text-center">
         <i class="bi bi-cash-stack text-3xl text-success mb-2 block"></i>
@@ -287,7 +276,6 @@
       </div>
     </div>
 
-    <!-- Chart -->
     <div class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6 mb-6">
       <div class="flex justify-between items-center mb-4">
         <h6 class="font-semibold text-on-surface">
@@ -305,7 +293,6 @@
       </div>
     </div>
 
-    <!-- Tabla de pagos -->
     <div class="bg-surface-container-lowest rounded-xl shadow border border-outline-variant overflow-hidden">
       <div class="flex justify-between items-center p-4 border-b border-outline-variant bg-surface-container-low">
         <h6 class="font-semibold text-on-surface"><i class="bi bi-cash-stack me-2 text-secondary"></i>Listado de Pagos</h6>
@@ -364,9 +351,7 @@
     </div>
   </div>
 
-  <!-- Tab: Estadisticas -->
   <div *ngIf="activeTab === 'estadisticas' && !loading" class="space-y-6">
-    <!-- KPI Cards Row 1 -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
         <div class="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary"><i class="bi bi-people text-xl"></i></div>
@@ -399,7 +384,6 @@
       </div>
     </div>
 
-    <!-- KPI Cards Row 2 -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class="bg-surface-container-lowest rounded-xl p-5 shadow hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-outline-variant/30 flex items-center gap-4">
         <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success"><i class="bi bi-calendar-check text-xl"></i></div>
@@ -432,7 +416,6 @@
       </div>
     </div>
 
-    <!-- Charts Row -->
     <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
       <div class="md:col-span-3 bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6">
         <div class="mb-4">
@@ -478,7 +461,6 @@
       </div>
     </div>
 
-    <!-- Bottom Row -->
     <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
       <div class="md:col-span-3 bg-surface-container-lowest rounded-xl shadow border border-outline-variant p-6">
         <div class="mb-4">
@@ -544,7 +526,6 @@
   </div>
 </div>
 
-<!-- Modal editar/crear usuario/personal -->
 <div *ngIf="showEditModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
      (click)="closeEditModal()">
   <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
@@ -628,3 +609,5 @@
     </div>
   </div>
 </div>
+
+</main>

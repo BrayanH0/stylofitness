@@ -78,7 +78,6 @@ export class AdminService {
     return this.http.put<any>(API_ENDPOINTS.ADMIN_PERSONAL_DESACTIVAR(dni), {});
   }
 
-  /** @deprecated Usar desactivarPersonal */
   eliminarPersonal(dni: number): Observable<any> {
     return this.http.delete<any>(API_ENDPOINTS.ADMIN_PERSONAL_DNI(dni));
   }

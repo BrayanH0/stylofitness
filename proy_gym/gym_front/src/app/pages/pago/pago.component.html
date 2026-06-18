@@ -3,10 +3,8 @@
 <div class="min-h-screen bg-surface-container-low flex items-center justify-center py-20 px-6" id="main-content">
   <div class="max-w-[800px] w-full mx-auto">
 
-    <!-- Step 2: Resumen -->
     <div class="bg-surface-container-lowest rounded-xl shadow overflow-hidden border border-outline-variant"
          *ngIf="step === 2">
-      <!-- Header -->
       <div class="bg-gradient-to-r from-primary-container to-on-tertiary-fixed-variant p-6 flex items-center gap-4">
         <i class="bi bi-receipt-cutoff text-4xl text-white"></i>
         <div>
@@ -16,7 +14,6 @@
       </div>
 
       <div class="p-8">
-        <!-- Step indicator -->
         <div class="flex justify-center items-center mb-8" role="group" aria-label="Pasos del pago">
           <div class="flex items-center">
             <div class="w-10 h-10 rounded-full bg-success flex items-center justify-center text-white font-bold shadow-md">
@@ -33,7 +30,6 @@
           </div>
         </div>
 
-        <!-- Summary Box -->
         <div class="bg-surface-container-low rounded-lg p-6 mb-6 border border-outline-variant">
           <div class="flex justify-between items-start mb-4 border-b border-outline-variant pb-4">
             <div>
@@ -61,7 +57,6 @@
           </div>
         </div>
 
-        <!-- Actions -->
         <div class="flex flex-col sm:flex-row gap-4 items-center justify-between pt-6 border-t border-outline-variant">
           <button type="button" (click)="goBack()"
                   class="w-full sm:w-auto px-6 py-3 rounded-lg border border-primary-container text-primary-container font-bold uppercase text-sm tracking-wide hover:bg-primary-container/5 transition-colors flex items-center justify-center gap-2">
@@ -75,10 +70,8 @@
       </div>
     </div>
 
-    <!-- Step 3: Pago con Stripe -->
     <div class="bg-surface-container-lowest rounded-xl shadow overflow-hidden border border-outline-variant"
          *ngIf="step === 3">
-      <!-- Header -->
       <div class="bg-gradient-to-r from-primary-container to-on-tertiary-fixed-variant p-6 flex items-center gap-4">
         <i class="bi bi-shield-lock-fill text-4xl text-white"></i>
         <div>
@@ -88,7 +81,6 @@
       </div>
 
       <div class="p-8">
-        <!-- Step indicator -->
         <div class="flex justify-center items-center mb-8" role="group" aria-label="Pasos del pago">
           <div class="flex items-center">
             <div class="w-10 h-10 rounded-full bg-success flex items-center justify-center text-white font-bold shadow-md">
@@ -107,7 +99,6 @@
           </div>
         </div>
 
-        <!-- Stripe Box -->
         <div class="bg-surface-container-low rounded-lg p-6 mb-6 border border-outline-variant text-center">
           <div class="text-success text-4xl mb-4">
             <i class="bi bi-shield-check"></i>
@@ -130,7 +121,6 @@
           </div>
         </div>
 
-        <!-- Actions -->
         <div class="flex flex-col sm:flex-row gap-4 items-center justify-between pt-6 border-t border-outline-variant">
           <button type="button" (click)="step = 2"
                   class="w-full sm:w-auto px-6 py-3 rounded-lg border border-primary-container text-primary-container font-bold uppercase text-sm tracking-wide hover:bg-primary-container/5 transition-colors flex items-center justify-center gap-2">
